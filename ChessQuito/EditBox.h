@@ -22,11 +22,24 @@ private:
 	Uint32 bgColor;
 	string txt;
 
-	void drawBox();
+	bool isSelect;
 
 public:
-	EditBox(SDL_Surface* ecran, TTF_Font* police, string& txt, int x, int y, int width, int height, Uint32 bgColor, SDL_Color fgColor);
-~EditBox();
+
+	EditBox(SDL_Surface* ecran, TTF_Font* police, int x, int y, int width, int height, Uint32 bgColor, SDL_Color fgColor);
+	int start();
+
+	void drawBox();
+
+
+	string getText() { return txt; }
+
+	void setText(string newTxt) { txt = newTxt; }
+
+	bool isClicked(int x, int y);
+	
+
+	~EditBox();
 };
 
 #endif

@@ -35,7 +35,8 @@ using namespace std;
 /* Liste fonctions */
 
 
-void ajouterJoueur(string, Joueur***&);
+bool ajouterJoueur(string, Joueur***&);
+bool updateJoueur(string, Joueur***&, int);
 void newPartie(Partie***&);
 
 void gestJoueur(Joueur***&);
@@ -70,35 +71,7 @@ int main(int argc, char *argv[]) {
 
 	UserInterface ui(listeJoueur, listePartie);
 
-
-	SDL_Event event;
-
-	while (continuer) {
-
-		SDL_WaitEvent(&event);
-		switch (event.type) {
-
-		case SDL_QUIT:
-			continuer = 0;
-			break;
-
-		case SDL_KEYDOWN:
-
-			if (event.key.keysym.sym == SDLK_ESCAPE)
-				continuer = false;
-			break;
-
-		case SDL_MOUSEBUTTONDOWN:
-			int action;
-			action = ui.checkEventMenu(event.button.x,event.button.y);
-			if(action == 0)
-				continuer = false;
-			else if (action == -1) {
-				ui.checkEventListe(event.button.x, event.button.y);
-			}
-			break;
-		}
-	}
+	ui.start();
 
 	/*cout << "Bienvenue sur le jeu ChessQuito" << endl
 		<< endl;
@@ -183,14 +156,13 @@ ostream& operator<<(ostream &flux, Partie const& mPartie)
 
 /* Gestion (ajout|suppression) des (joueurs|parties) */
 
-void ajouterJoueur(string nom, Joueur***& listeJoueur) {
+bool ajouterJoueur(string nom, Joueur***& listeJoueur) {
 
 	int i = 0;
 
 	for (; (*listeJoueur)[i] != NULL; i++)
 		if (nom == (*listeJoueur)[i]->getNom()) {
-			cout << "Le nom est deja pris !" << endl;
-			return;
+			return false;
 		}
 
 	/* On commence agrandir le tableau de pointeur de joueurs */
@@ -207,6 +179,20 @@ void ajouterJoueur(string nom, Joueur***& listeJoueur) {
 	delete[](*listeJoueur); // On supprime l'ancien tableau
 
 	(*listeJoueur) = tabTmp; // On assigne la nouvelle addresse du tableau
+
+	return true;
+}
+
+
+bool updateJoueur(string nom, Joueur***& listeJoueur, int i) {
+
+	for (int j = 0; (*listeJoueur)[j] != NULL; i++)
+		if (nom == (*listeJoueur)[j]->getNom()) {
+			return false;
+		}
+
+	(*listeJoueur)[i]->setNom(nom);
+	return true;
 }
 
 
@@ -233,7 +219,11 @@ void newPartie(Partie***& listePartie) {
 }
 
 
-/* Interfaces de gestion */
+
+
+
+
+/* Interfaces de gestion console */
 
 void gestJoueur(Joueur***& listeJoueur) {
 
@@ -1055,7 +1045,7 @@ void saveJoueurs(Joueur***& listeJoueur) {
 
 /* Redimmensionne l'image */
 
-void resizeImage(SDL_Surface*& img, const double newwidth, const double newheight, bool x = false)
+void resizeImage(SDL_Surface*& img, const double newwidth, const double newheight, bool x)
 {
 	// Zoom function uses doubles for rates of scaling, rather than
 	// exact size values. This is how we get around that:

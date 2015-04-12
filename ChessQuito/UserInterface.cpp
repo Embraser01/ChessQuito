@@ -41,6 +41,7 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 	btnAddJoueur = NULL;
 	btnUpdateJoueur = NULL;
 	btnDeleteJoueur = NULL;
+	btnValider = NULL;
 
 	btnPlayPartie = NULL;
 	btnNewPartie = NULL;
@@ -48,6 +49,17 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 
 	btnListe = NULL;
 
+
+	/* On initialise l'EditBox */
+
+	Uint32 bgColor = SDL_MapRGB(ecran->format, 255, 255, 255);
+	SDL_Color fontColor = { 0, 0, 0 };
+
+	
+	eb = new EditBox(ecran, police, 300, 300, 250, 45, bgColor, fontColor);
+
+
+	/* On positionne la barre de navigation et le plateau */
 
 	navBar.h = TY;
 	navBar.w = TX - WIDTH;
@@ -64,6 +76,65 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 	
 
 	SDL_Flip(ecran);
+}
+
+
+
+
+void UserInterface::start()
+{
+
+	bool continuer = true;
+
+
+	SDL_Event event;
+
+	while (continuer) {
+
+		SDL_WaitEvent(&event);
+		switch (event.type) {
+
+		case SDL_QUIT:
+			continuer = 0;
+			break;
+
+		case SDL_KEYDOWN:
+
+			if (event.key.keysym.sym == SDLK_ESCAPE)
+				continuer = false;
+			break;
+
+		case SDL_MOUSEBUTTONDOWN:
+			int action = checkEventMenu(event.button.x, event.button.y); 
+
+			if (action == 0)
+				continuer = false;
+
+			else if (action == -1) { // Pas dans le menu
+
+				if (mode == 0) {
+					checkEventPartie(event.button.x, event.button.y);
+				}
+				else if (mode == 2 || mode == 3) {
+					checkEventListe(event.button.x, event.button.y);
+				}
+				else if (mode == 4 || mode == 5) {
+					if (eb->isClicked(event.button.x, event.button.y)) {
+						int jsp = checkEventEditBox();
+						if (jsp == -1)
+							continuer = false;
+						else {
+							mode = 2;
+							dPlateau();
+							dNavBar();
+						}
+					}
+					
+				}
+			}
+			break;
+		}
+	}
 }
 
 
@@ -262,6 +333,9 @@ void UserInterface::dPlateau()
 		SDL_BlitSurface(tmp, NULL, ecran, &tmpRect);
 		SDL_FreeSurface(tmp);
 
+		eb->setText("Defaut");
+		eb->drawBox();
+
 	}
 	else if (mode == 5) {
 
@@ -278,6 +352,9 @@ void UserInterface::dPlateau()
 		SDL_BlitSurface(tmp, NULL, ecran, &tmpRect);
 		SDL_FreeSurface(tmp);
 
+		eb->setText((*listeJoueur)[selection]->getNom());
+		eb->drawBox();
+		
 	}
 	SDL_Flip(ecran);
 }
@@ -344,11 +421,16 @@ void UserInterface::dNavBar()
 
 		if (btnValider == NULL)
 			btnValider = new Bouton(ecran, police, "Valider", WIDTH + 10, 500, TX - WIDTH - 20, 70, btnColor, btnFontColor);
-
+		
 		btnValider->afficherBtn();
+
 
 	}
 }
+
+
+
+
 
 int UserInterface::checkEventMenu(int x, int y)
 {
@@ -394,10 +476,16 @@ int UserInterface::checkEventMenu(int x, int y)
 		}
 
 		if (btnAddJoueur->isClicked(x, y)) {
+			mode = 4;
+			dPlateau();
+			dNavBar();
 			return 5;
 		}
 
 		if (btnUpdateJoueur->isClicked(x, y) && selection != -1) {
+			mode = 5;
+			dPlateau();
+			dNavBar();
 			return 4;
 		}
 
@@ -446,6 +534,7 @@ int UserInterface::checkEventMenu(int x, int y)
 }
 
 
+
 char * UserInterface::checkEventPartie(int x, int y)
 {
 
@@ -453,10 +542,10 @@ char * UserInterface::checkEventPartie(int x, int y)
 	return NULL;
 }
 
-void UserInterface::checkEventListe(int x, int y)
+int UserInterface::checkEventListe(int x, int y)
 {
 	if (mode != 2 && mode != 3)
-		return;
+		return -1;
 
 	selection = - 1;
 
@@ -469,28 +558,77 @@ void UserInterface::checkEventListe(int x, int y)
 
 	if (selection != -1)
 		dPlateau();
+	return 0;
 }
 
-
-
-void UserInterface::resizeImage(SDL_Surface*& img, const double newwidth, const double newheight, bool x)
+int UserInterface::checkEventEditBox()
 {
-	// Zoom function uses doubles for rates of scaling, rather than
-	// exact size values. This is how we get around that:
-	double zoomx = newwidth / (float)img->w;
-	double zoomy = newheight / (float)img->h;
-	SDL_Surface* sized = NULL;
+	bool isEditionFinish = false;
 
-	// This function assumes no smoothing, so that any colorkeys wont bleed.
-	if (x)
-		sized = zoomSurface(img, zoomx, zoomx, SMOOTHING_OFF);
-	else
-		sized = zoomSurface(img, zoomy, zoomy, SMOOTHING_OFF);
+	while (!isEditionFinish) {
 
+		int res = eb->start();
 
-	SDL_FreeSurface(img);
-	img = sized;
+		if (res == -2) { // Quitter le jeu
+			return -1;
+		}
+		SDL_Event event;
+		SDL_WaitEvent(&event);
+
+		if (btnSortir->isClicked(event.button.x, event.button.y)) {
+			return 1;
+		}
+
+		if ((btnValider->isClicked(event.button.x, event.button.y) || res == 0) && eb->getText().length() > 0) {
+
+			if (mode == 4) {
+				if (!ajouterJoueur(eb->getText(), listeJoueur)) {
+
+					dPlateau();
+
+					SDL_Surface* tmp;
+
+					tmp = TTF_RenderText_Blended(police, "Le nom est déjà pris !", btnFontColor);
+
+					resizeImage(tmp, 250, 250, true);
+
+					SDL_Rect tmpRect;
+					tmpRect.x = 300;
+					tmpRect.y = 360;
+
+					SDL_BlitSurface(tmp, NULL, ecran, &tmpRect);
+					SDL_FreeSurface(tmp);
+				}
+				else
+					isEditionFinish = true;
+			}
+			else {
+				if (!updateJoueur(eb->getText(), listeJoueur, selection)) {
+
+					dPlateau();
+
+					SDL_Surface* tmp;
+
+					tmp = TTF_RenderText_Blended(police, "Le nom est déjà pris !", btnFontColor);
+
+					resizeImage(tmp, 250, 250, true);
+
+					SDL_Rect tmpRect;
+					tmpRect.x = 300;
+					tmpRect.y = 360;
+
+					SDL_BlitSurface(tmp, NULL, ecran, &tmpRect);
+					SDL_FreeSurface(tmp);
+				}
+				else
+					isEditionFinish = true;
+			}	
+		}
+		
+	}
+	return 0;
 }
+
 
 
 UserInterface::~UserInterface()
@@ -500,16 +638,21 @@ UserInterface::~UserInterface()
 
 	if(btnSortir != NULL)
 		delete btnSortir;
+
 	if (btnGestJoueurs != NULL)
 		delete btnGestJoueurs;
 	if (btnGestParties != NULL)
 		delete btnGestParties;
+
 	if (btnAddJoueur != NULL)
 		delete btnAddJoueur;
 	if (btnUpdateJoueur != NULL)
 		delete btnUpdateJoueur;
 	if (btnDeleteJoueur != NULL)
 		delete btnDeleteJoueur;
+	if (btnValider != NULL)
+		delete btnValider;
+
 	if (btnPlayPartie != NULL)
 		delete btnPlayPartie;
 	if (btnNewPartie != NULL)
@@ -522,6 +665,11 @@ UserInterface::~UserInterface()
 			delete btnListe[i];
 		delete btnListe;
 	}
+
+
+	/* On delete l'EditBox */
+
+	delete eb;
 
 	/* On ferme les modules */
 

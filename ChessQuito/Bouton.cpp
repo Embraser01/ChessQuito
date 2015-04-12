@@ -25,7 +25,7 @@ Bouton::Bouton(SDL_Surface * ecran, TTF_Font * police, string txtBtn, int x, int
 	if (tmp->w > width - 20)
 		resizeImage(tmp, width - 10, width - 10, true);
 	if (tmp->h > height - 8)
-		resizeImage(tmp, height - 4, height - 4);
+		resizeImage(tmp, height - 4, height - 4, false);
 
 	SDL_Rect tmpRect;
 	tmpRect.x = (width - tmp->w) / 2;
