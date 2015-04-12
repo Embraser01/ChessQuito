@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ChessQuito", "ChessQuito\ChessQuito.vcxproj", "{A8CC73D1-1886-478C-9645-6FA7ACEC472C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8CC73D1-1886-478C-9645-6FA7ACEC472C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A8CC73D1-1886-478C-9645-6FA7ACEC472C}.Debug|Win32.Build.0 = Debug|Win32
+		{A8CC73D1-1886-478C-9645-6FA7ACEC472C}.Release|Win32.ActiveCfg = Release|Win32
+		{A8CC73D1-1886-478C-9645-6FA7ACEC472C}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

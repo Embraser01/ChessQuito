@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Cavalier" Collapsed="true">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAIAAAAAAAAAAAAAAAAAEAAABAA=</HashCode>
+      <FileName>Cavalier.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fou" Collapsed="true">
+    <Position X="5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAIAAAAAAAAAAAMAAAAAA=</HashCode>
+      <FileName>Fou.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Joueur" Collapsed="true">
+    <Position X="14.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAEAAAAAAAAAAIABAAAAAAgAAYAAkAAAAAAA=</HashCode>
+      <FileName>Joueur.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Partie" Collapsed="true">
+    <Position X="16" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACQCAEAAIAABgEIAAAAgAAEIAAASABGAgAQIAJAA=</HashCode>
+      <FileName>Partie.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Piece" Collapsed="true">
+    <Position X="6" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAACAAAABIABAQAAAAAACCEAAAEsAAAAAQ=</HashCode>
+      <FileName>Piece.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pion" Collapsed="true">
+    <Position X="9.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAKAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Pion.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Reine" Collapsed="true">
+    <Position X="11.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAIAAAAAAAAAAAAAAAAEEAAAAAA=</HashCode>
+      <FileName>Reine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Roi" Collapsed="true">
+    <Position X="2.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAAAIAAAAAAAAAAgAAAAAAEAAAAAA=</HashCode>
+      <FileName>Roi.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tour" Collapsed="true">
+    <Position X="7.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAIAAAAAAAAIAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Tour.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Typedef Name="Plateau" Collapsed="true">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Partie.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
