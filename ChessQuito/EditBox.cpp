@@ -15,9 +15,7 @@ EditBox::EditBox(SDL_Surface * ecran, TTF_Font * police, string & txt, int x, in
 	boxRect.w = width;
 	boxRect.x = x;
 	boxRect.y = y;
-
-	/* TEST */
-
+	
 
 	drawBox();
 }

@@ -14,7 +14,6 @@
 
 
 
-
 /* Includes ChessQuito */
 
 #include "Joueur.h"
