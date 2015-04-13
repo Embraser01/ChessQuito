@@ -1,8 +1,0 @@
-2015-04-06 21-42-05
-Test1
-Test2
-1
-NULL_0_0 NULL_0_0 NULL_0_0 Reine_1_1 
-Tour_1_1 NULL_0_0 NULL_0_0 NULL_0_0 
-Fou_0_1 NULL_0_0 NULL_0_0 Fou_1_1 
-Cavalier_0_1 NULL_0_0 NULL_0_0 Reine_0_1 

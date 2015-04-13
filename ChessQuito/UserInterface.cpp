@@ -435,6 +435,10 @@ void UserInterface::dNavBar()
 
 
 
+void UserInterface::playPartie(Partie*& mPartie) {
+
+}
+
 
 
 int UserInterface::checkEventMenu(int x, int y)
@@ -547,7 +551,6 @@ int UserInterface::checkEventMenu(int x, int y)
 }
 
 
-
 char * UserInterface::checkEventPartie(int x, int y)
 {
 
@@ -641,6 +644,7 @@ int UserInterface::checkEventEditBox()
 	}
 	return 0;
 }
+
 
 
 

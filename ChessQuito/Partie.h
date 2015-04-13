@@ -34,6 +34,7 @@ private:
 
 	int typePartie; // Contient le numéro de la règle utilisé
 
+	bool isWhiteToPlay; // Permet de s'arreter dans une partie
 	int nCoup; // Comptabilise le nombre de coup fait durant la partie
 	int nDernierePrise; // Contient le numero du coup de la dernière prise
 
@@ -48,9 +49,11 @@ public:
 	Joueur* getJ1() const {return j1;}
 	Joueur* getJ2() const {return j2;}
 	int getTypePartie() const {return typePartie;}
+	bool getIsWhiteToPlay() const { return isWhiteToPlay; }
 
 
 	void setTypePartie(int); // Met le type de partie ( num de la regle)
+	void setIsWhiteTiPlay(bool);
 
 	void affichePlateau(ostream& flux) const; // Permet cout << mPartie;
 

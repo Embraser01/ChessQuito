@@ -96,6 +96,11 @@ void Partie::setTypePartie(int type){
 		typePartie = type;
 }
 
+void Partie::setIsWhiteTiPlay(bool state)
+{
+	this->isWhiteToPlay = state;
+}
+
 
 void Partie::affichePlateau(ostream& flux) const{
 

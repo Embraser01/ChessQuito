@@ -91,6 +91,7 @@ private:
 	int checkEventListe(int x, int y); // Change l'état de selection en l'id de la partie/ du joueur ou -1 si ailleurs
 	int checkEventEditBox(); // Gère ( a peu près) l'edition
 
+	void playPartie(Partie*& mPartie); // Gère une partie de A à Z 
 
 public:
 	UserInterface(Joueur***, Partie***); // Liste des joueurs, liste des parties
