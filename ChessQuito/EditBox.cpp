@@ -319,7 +319,7 @@ void EditBox::drawBox()
 
 	Uint32 tmpColor;
 
-	if (isSelect) 
+	if (isSelect && txt.length() > 0) 
 		tmpColor = SDL_MapRGB(ecran->format, 0, 255, 0);
 	else
 		tmpColor = SDL_MapRGB(ecran->format, 255, 0, 0);

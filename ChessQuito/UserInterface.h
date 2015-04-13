@@ -16,7 +16,10 @@
 
 bool ajouterJoueur(string, Joueur***&); 
 bool updateJoueur(string, Joueur***&, int i);
+void deleteJoueur(Joueur***&, Joueur*);
+
 void newPartie(Partie***&);
+void deletePartie(Partie***&, Partie* mPartie);
 
 
 /* Constantes */

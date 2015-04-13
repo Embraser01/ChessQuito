@@ -116,20 +116,20 @@ void UserInterface::start()
 					checkEventPartie(event.button.x, event.button.y);
 				}
 				else if (mode == 2 || mode == 3) {
+
 					checkEventListe(event.button.x, event.button.y);
 				}
 				else if (mode == 4 || mode == 5) {
-					if (eb->isClicked(event.button.x, event.button.y)) {
-						int jsp = checkEventEditBox();
-						if (jsp == -1)
-							continuer = false;
-						else {
-							mode = 2;
-							dPlateau();
-							dNavBar();
-						}
+
+					int jsp = checkEventEditBox();
+						
+					if (jsp == -1)
+						continuer = false;
+					else {
+						mode = 2;
+						dPlateau();
+						dNavBar();
 					}
-					
 				}
 			}
 			break;
@@ -362,7 +362,6 @@ void UserInterface::dPlateau()
 void UserInterface::dNavBar()
 {
 
-	selection = -1; // On reinitialise la selection à -1 a chaque changement de menu
 
 	SDL_FillRect(ecran, &navBar, SDL_MapRGB(ecran->format, 144, 164, 174)); // On met la navBar
 
@@ -490,6 +489,9 @@ int UserInterface::checkEventMenu(int x, int y)
 		}
 
 		if (btnDeleteJoueur->isClicked(x, y) && selection != -1) {
+			deleteJoueur(listeJoueur, (*listeJoueur)[selection]);
+			selection = -1;
+			dPlateau();
 			return 6;
 		}
 	}
@@ -503,6 +505,8 @@ int UserInterface::checkEventMenu(int x, int y)
 		}
 
 		if (btnNewPartie->isClicked(x, y)) {
+			newPartie(listePartie);
+			dPlateau();
 			return 2;
 		}
 
@@ -511,6 +515,9 @@ int UserInterface::checkEventMenu(int x, int y)
 		}
 
 		if (btnDeletePartie->isClicked(x, y) && selection != -1) {
+			deletePartie(listePartie, (*listePartie)[selection]);
+			selection = -1;
+			dPlateau();
 			return 1;
 		}
 

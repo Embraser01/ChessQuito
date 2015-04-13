@@ -37,7 +37,11 @@ using namespace std;
 
 bool ajouterJoueur(string, Joueur***&);
 bool updateJoueur(string, Joueur***&, int);
+void deleteJoueur(Joueur***&, Joueur*);
+
 void newPartie(Partie***&);
+void deletePartie(Partie***&, Partie*);
+
 
 void gestJoueur(Joueur***&);
 void gestPartie(Partie***&);
@@ -183,10 +187,9 @@ bool ajouterJoueur(string nom, Joueur***& listeJoueur) {
 	return true;
 }
 
-
 bool updateJoueur(string nom, Joueur***& listeJoueur, int i) {
 
-	for (int j = 0; (*listeJoueur)[j] != NULL; i++)
+	for (int j = 0; (*listeJoueur)[j] != NULL; j++)
 		if (nom == (*listeJoueur)[j]->getNom()) {
 			return false;
 		}
@@ -194,6 +197,36 @@ bool updateJoueur(string nom, Joueur***& listeJoueur, int i) {
 	(*listeJoueur)[i]->setNom(nom);
 	return true;
 }
+
+void deleteJoueur(Joueur***& listeJoueur, Joueur* mJoueur) {
+
+	int i = 0;
+	for (; (*listeJoueur)[i] != NULL; i++);
+
+	int id = 0;
+	for (; (*listeJoueur)[id] != mJoueur; id++);
+
+
+	/* On reduit le tableau de pointeur de joueurs */
+
+	Joueur** tabTmp = new Joueur*[i];
+
+	for (int j = 0, k = 0; j < i; j++) {
+		if (id != j) {
+			tabTmp[k] = (*listeJoueur)[j];
+			k++;
+		}
+	}
+
+	delete mJoueur;
+
+	tabTmp[i - 1] = NULL; // On met le dernier à NULL afin de pouvoir avoir un etat d'arret lors des tests sur la liste
+
+	delete[](*listeJoueur); // On supprime l'ancien tableau
+
+	(*listeJoueur) = tabTmp; // On assigne la nouvelle addresse du tableau
+}
+
 
 
 void newPartie(Partie***& listePartie) {
@@ -218,6 +251,34 @@ void newPartie(Partie***& listePartie) {
 	(*listePartie) = tabTmp; // On change l'addresse du tableau pointé par listePartie
 }
 
+void deletePartie(Partie***& listePartie, Partie* mPartie) {
+
+	int i = 0;
+	for (; (*listePartie)[i] != NULL; i++);
+
+	int id = 0;
+	for (; (*listePartie)[id] != mPartie; id++);
+
+
+	/* On reduit le tableau de pointeur de joueurs */
+
+	Partie** tabTmp = new Partie*[i];
+
+	for (int j = 0, k = 0; j < i; j++) {
+		if (id != j) {
+			tabTmp[k] = (*listePartie)[j];
+			k++;
+		}
+	}
+
+	delete mPartie;
+
+	tabTmp[i - 1] = NULL; // On met le dernier à NULL afin de pouvoir avoir un etat d'arret lors des tests sur la liste
+
+	delete[](*listePartie); // On supprime l'ancien tableau
+
+	(*listePartie) = tabTmp; // On assigne la nouvelle addresse du tableau
+}
 
 
 
