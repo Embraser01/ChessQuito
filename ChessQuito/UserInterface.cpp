@@ -146,6 +146,12 @@ void UserInterface::dPlateau()
 
 	if (mode == 0) {
 
+
+		if ((*listePartie)[selection]->getJ1() == NULL || (*listePartie)[selection]->getJ2() == NULL) {
+
+
+		}
+
 		SDL_Rect contour;
 		contour.h = CASE_Y * TAILLE + 8;
 		contour.w = CASE_X * TAILLE + 8;

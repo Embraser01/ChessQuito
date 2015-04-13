@@ -1,4 +1,7 @@
-/* Includes SDL */
+/* 
+	Includes SDL et 
+	définition de la fonction resize ( ==> main) 
+*/
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>

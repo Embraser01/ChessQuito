@@ -1,6 +1,12 @@
 #ifndef _ROI_H
 #define _ROI_H
 
+/*
+	Roi:
+		Hérite de Pièce,
+		Mouvement limité à 1 case 
+*/
+
 #include "Piece.h"
 class Roi :
 	public Piece

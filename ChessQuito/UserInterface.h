@@ -1,6 +1,11 @@
 #ifndef _USERINTERFACE_H
 #define _USERINTERFACE_H
 
+/*
+	UserInterface:
+		Class qui gère tout la partie Interface,
+		Affichage / Events / etc...
+*/
 
 #include "SDL_INIT.h"
 
@@ -12,7 +17,7 @@
 
 
 
-/* On importe les fonctions qu'on devra utiliser */
+/* On importe les fonctions qu'on devra utiliser (==> main) */
 
 bool ajouterJoueur(string, Joueur***&); 
 bool updateJoueur(string, Joueur***&, int i);
@@ -29,8 +34,8 @@ const int TY = 700; // Hauteur de la fenetre
 
 const int WIDTH = 700; // Largeur de la zone de "JEU"
 
-const int CASE_X = 100;
-const int CASE_Y = 100;
+const int CASE_X = 100; // Largeur d'une case
+const int CASE_Y = 100; // Hauteur d'une case
 
 
 class UserInterface
@@ -47,10 +52,10 @@ private:
 	Partie*** listePartie; // ( affichage des listes des parties et joueurs)
 
 
-	/* Liste des boutons */
+	/* Liste des boutons (leur nom permet de les identifier) */
 
-	SDL_Color btnFontColor;
-	Uint32 btnColor;
+	SDL_Color btnFontColor; // Couleur de la police
+	Uint32 btnColor; // Couleur du fond des boutons
 
 	Bouton* btnSortir;
 
@@ -69,7 +74,8 @@ private:
 	Bouton** btnListe;
 
 
-	EditBox* eb;
+
+	EditBox* eb; // EditBox pour le pseudo du joueur
 
 
 	int mode; // Modes d'affichage	0. Jouer Partie		1. Accueil	2. Gestionnaire Joueurs	3. Gestionnaire Parties		4. AjouterJoueur	5. UpdateJoueur
@@ -83,18 +89,18 @@ private:
 
 	char* checkEventPartie(int x, int y); // Renvoie les coordonnées cliquer sur l'echiquier (ex: "a2");
 	int checkEventListe(int x, int y); // Change l'état de selection en l'id de la partie/ du joueur ou -1 si ailleurs
-	int checkEventEditBox();
+	int checkEventEditBox(); // Gère ( a peu près) l'edition
 
 
 public:
-	UserInterface(Joueur***, Partie***);
+	UserInterface(Joueur***, Partie***); // Liste des joueurs, liste des parties
 
 
 	void start(); // Lance la gestion des events
 
 
-	void dPlateau();
-	void dNavBar();
+	void dPlateau(); // Affiche la partie tableau
+	void dNavBar(); // Affiche la barre de navigation
 
 	
 	int getMode() { return mode; }

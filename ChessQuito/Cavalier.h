@@ -1,6 +1,11 @@
 #ifndef _CAVALIER_H
 #define _CAVALIER_H
 
+/*
+	Cavalier:
+		Hérite de Pièce,
+		Mouvement en L
+*/
 
 #include "Piece.h"
 

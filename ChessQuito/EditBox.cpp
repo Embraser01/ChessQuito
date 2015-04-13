@@ -4,18 +4,19 @@
 
 EditBox::EditBox(SDL_Surface * ecran, TTF_Font * police, int x, int y, int width, int height, Uint32 bgColor, SDL_Color fgColor)
 {
+	/* On enregsitre les données nécessaires */
+
 	this->ecran = ecran;
 	this->police = police;
 	this->bgColor = bgColor;
 	this->fgColor = fgColor;
 
-	
 	boxRect.h = height;
 	boxRect.w = width;
 	boxRect.x = x;
 	boxRect.y = y;
 
-	isSelect = false;
+	isSelect = false; // False 
 	
 }
 

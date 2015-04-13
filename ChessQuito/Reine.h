@@ -1,6 +1,11 @@
 #ifndef _REINE_H
 #define _REINE_H
 
+/*
+	Reine:
+		Hérite de Pièce,
+		Mouvement verticaux ou horizontaux ou diagonaux
+*/
 
 #include "Piece.h"
 

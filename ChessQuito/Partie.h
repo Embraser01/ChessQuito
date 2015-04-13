@@ -2,6 +2,11 @@
 #define _PARTIE_H
 
 
+/*
+	Partie:
+		Gère tout ce qui est nécessaire pour une partie
+*/
+
 #include <string>
 #include <iostream>
 #include <ctime>
@@ -12,32 +17,32 @@
 using namespace std;
 
 const int TAILLE=4;
-typedef Piece* Plateau[TAILLE][TAILLE]; // Echequier
+typedef Piece* Plateau[TAILLE][TAILLE]; // Echiquier
 
-class Joueur;
+class Joueur; // Pour que partie connaisse la class Joueur
 
 class Partie
 {
 private:
 
-	string date;
+	string date; // Date sous le format : "2015-11-30 23-42-55"
 
-	Joueur* j1;
-	Joueur* j2;
+	Joueur* j1; // Pointeur sur le joueur 1
+	Joueur* j2; // Pointeur sur le joueur 2
 
-	Plateau p;
+	Plateau p; // Un échiquier par partie
 
-	int typePartie;
+	int typePartie; // Contient le numéro de la règle utilisé
 
-	int nCoup;
-	int nDernierePrise;
+	int nCoup; // Comptabilise le nombre de coup fait durant la partie
+	int nDernierePrise; // Contient le numero du coup de la dernière prise
 
 public:
-	Partie();
-	Partie(string);
+	Partie(); // Date généré automatiquement
+	Partie(string); // Date
 
-	Partie(const Partie& cpyPartie);
-	Partie& operator=(Partie& cpyPartie);
+	Partie(const Partie& cpyPartie); // Constructeur par copie
+	Partie& operator=(Partie& cpyPartie); // Operateur d'affectation
 
 	string getDate() const{ return date;}
 	Joueur* getJ1() const {return j1;}

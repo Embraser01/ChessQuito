@@ -1,6 +1,11 @@
 #ifndef _TOUR_H
 #define _TOUR_H
 
+/*
+	Tour:
+		Hérite de Pièce,
+		Mouvement verticaux ou horizontaux
+*/
 
 #include "Piece.h"
 

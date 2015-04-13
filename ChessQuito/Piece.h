@@ -1,6 +1,10 @@
 #ifndef _PIECE_H
 #define _PIECE_H
 
+/*
+	Pièce:
+		Class mère, abstraite,
+*/
 
 #include <string>
 #include <iostream>
@@ -19,10 +23,10 @@ protected :
 
 public:
 	Piece(void);
-	Piece(int);
-	Piece(int, int);
+	Piece(int); // Couleur
+	Piece(int, int); // Couleur, Etat
 
-	virtual Piece* clone() = 0;
+	virtual Piece* clone() = 0; // Permet de dupliquer une pièce ( virtual car pièces typées)
 
 	string getName(){return Name;}
 	int getColor(){return color;}

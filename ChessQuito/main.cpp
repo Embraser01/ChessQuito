@@ -63,9 +63,9 @@ void saveJoueurs(Joueur***&);
 //////////////////
 
 int main(int argc, char *argv[]) {
-	
-	bool continuer = true;
 
+
+	/* On charge les sauvegardes */
 
 	Joueur*** listeJoueur = NULL;
 	Partie*** listePartie = NULL;
@@ -73,58 +73,20 @@ int main(int argc, char *argv[]) {
 	chargerJeu(listePartie, listeJoueur);
 	
 
+	/* Initialisation de l'interface Utilisateur */
+
 	UserInterface ui(listeJoueur, listePartie);
 
 	ui.start();
 
-	/*cout << "Bienvenue sur le jeu ChessQuito" << endl
-		<< endl;
 
-	char tmp[2] = { "\0" };
-
-	while (tmp[0] != '4') {
-
-
-		cout << "Choisissez entre :" << endl
-			<< "\t 1. Gestionnaire de joueurs" << endl
-			<< "\t 2. Gestionnaire de parties" << endl
-			<< "\t 3. Ajouter un joueur a une partie" << endl
-			<< endl
-			<< "\t 4. Quitter" << endl;
-
-		cin >> tmp;
-
-		system("cls");
-
-
-		switch (tmp[0]) {
-
-		case '1':
-			gestJoueur(listeJoueur);
-			break;
-
-		case '2':
-			gestPartie(listePartie);
-			break;
-
-		case '3':
-			setJoueurPartie(listeJoueur, listePartie);
-			break;
-
-		case '4':
-			cout << "A bientot !" << endl;
-			break;
-
-		default:
-			cout << "Rentrez un numero valide !" << endl;
-			break;
-
-		}
-	}*/
+	/* On enregistre les joueurs + les parties */
 
 	saveJoueurs(listeJoueur);
 	saveParties(listePartie);
 
+
+	/* On supprime les listes de la mémoire */
 
 	for(int i = 0; (*listePartie)[i] != NULL;i++){
 		delete (*listePartie)[i];

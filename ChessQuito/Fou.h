@@ -1,6 +1,11 @@
 #ifndef _FOU_H
 #define _FOU_H
 
+/*
+	Fou:
+		Hérite de Pièce,
+		Mouvement diagonaux
+*/
 
 #include "Piece.h"
 
