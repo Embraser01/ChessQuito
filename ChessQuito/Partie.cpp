@@ -18,6 +18,7 @@ Partie::Partie()
 	j1 = NULL;
 	j2 = NULL;
 
+
 	typePartie = -1;
 
 	nCoup = 0;
@@ -90,10 +91,83 @@ Partie& Partie::operator=(Partie& cpyPartie){
 
 
 
+Piece * Partie::getPNoir(int i) const
+{
+	return pNoir[i];
+}
+
+Piece * Partie::getPBlanc(int i) const
+{
+	return pBlanc[i];
+}
+
+
+void Partie::setPNoir(int i, Piece* piece) {
+
+
+}
+
+
 void Partie::setTypePartie(int type){
 
-	if(typePartie == -1 && type < 4 && type > 0)
+	if (typePartie == -1 && type < 4 && type > 0) {
 		typePartie = type;
+
+		switch (typePartie) {
+
+		case 1:
+			cout << "Vous avez choisi la regle 1." << endl
+				<< "Vous aurez les pièces suivantes :" << endl
+				<< "Reine \t Tour \t Fou \t Cavalier" << endl;
+
+			pBlanc[0] = new Reine(0);
+			pBlanc[1] = new Tour(0);
+			pBlanc[2] = new Fou(0);
+			pBlanc[3] = new Cavalier(0);
+
+			pNoir[0] = new Reine(1);
+			pNoir[1] = new Tour(1);
+			pNoir[2] = new Fou(1);
+			pNoir[3] = new Cavalier(1);
+			break;
+
+		case 2:
+			cout << "Vous avez choisi la regle 2." << endl
+				<< "Vous aurez les pièces suivantes :" << endl
+				<< "Pion \t Tour \t Fou \t Cavalier" << endl;
+
+			pBlanc[0] = new Pion(0);
+			pBlanc[1] = new Tour(0);
+			pBlanc[2] = new Fou(0);
+			pBlanc[3] = new Cavalier(0);
+
+			pNoir[0] = new Pion(1);
+			pNoir[1] = new Tour(1);
+			pNoir[2] = new Fou(1);
+			pNoir[3] = new Cavalier(1);
+			break;
+
+		case 3:
+			cout << "Vous avez choisi la regle 3." << endl
+				<< "Vous aurez les pièces suivantes :" << endl
+				<< "Roi \t Tour \t Fou \t Cavalier" << endl;
+
+			pBlanc[0] = new Roi(0);
+			pBlanc[1] = new Tour(0);
+			pBlanc[2] = new Fou(0);
+			pBlanc[3] = new Cavalier(0);
+
+			pNoir[0] = new Roi(1);
+			pNoir[1] = new Tour(1);
+			pNoir[2] = new Fou(1);
+			pNoir[3] = new Cavalier(1);
+			break;
+		}
+	}
+
+	else {
+		cout << "Cette regle n'existe pas" << endl << endl;
+	}
 }
 
 void Partie::setIsWhiteTiPlay(bool state)
@@ -124,6 +198,16 @@ void Partie::affichePlateau(ostream& flux) const{
 
 
 bool Partie::placePiece(Piece* piece, char pos2[3]){
+
+
+	/* On regarde si la partie est initialisé */
+
+	if (!this->isPartieInit()) {
+		if (this->initPiece(piece, pos2))
+			return true;
+		else
+			return false;
+	}
 
 
 	/* On recupère la position actuelle de la piece */
@@ -298,6 +382,18 @@ bool Partie::placePiece(Piece* piece, char pos2[3]){
 }
 
 
+bool Partie::placePiece(Piece* piece, int i, int j)
+{
+
+	char pos[3];
+
+	pos[0] = i + 'a';
+	pos[1] = j + '0';
+
+	return placePiece(piece, pos);
+}
+
+
 
 bool Partie::initPiece(Piece* piece, char pos[3])
 {
@@ -311,6 +407,16 @@ bool Partie::initPiece(Piece* piece, char pos[3])
 	if (piece->getState() == 0 && p[x][y] == NULL) {
 		p[x][y] = piece;
 		piece->setState(1);
+
+		// On supprime la piece du tableau
+
+		for (int i = 0; i < 4; i++) {
+			if (piece == pNoir[i])
+				pNoir[i] = NULL;
+			if (piece == pBlanc[i])
+				pBlanc[i] = NULL;
+		}
+
 		return true;
 	}
 
@@ -363,14 +469,13 @@ bool Partie::addJoueur(Joueur* j)
 
 bool Partie::isPartieInit(){
 
-	for(int i = 0; i < TAILLE; i++){
-		for(int j = 0; j < TAILLE; j++){
-			if( p[i][j] != NULL){
-				return true;
-			}
-		}
+	for(int i = 0; i < 4; i++){
+		if (pNoir[i] != NULL)
+			return false;
+		if (pBlanc[i] != NULL)
+			return false;
 	}
-	return false;
+	return true;
 }
 
 bool Partie::isPartieEnd(){

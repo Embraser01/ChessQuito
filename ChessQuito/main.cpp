@@ -19,13 +19,6 @@
 #include "Joueur.h"
 #include "Partie.h"
 
-#include "Fou.h"
-#include "Tour.h"
-#include "Cavalier.h"
-#include "Reine.h"
-#include "Roi.h"
-#include "Pion.h"
-
 #include "UserInterface.h"
 
 
@@ -815,7 +808,7 @@ void playPartie(Partie* mPartie) {
 void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 
 
-	cout << "Chargement des Joueurs !" << endl;
+	cout << "Chargement des Joueurs .";
 
 	/* On charge les joueurs */
 
@@ -826,6 +819,9 @@ void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 		string contenu;  // déclaration d'une chaîne qui contiendra la ligne lue
 
 		int i = 0;
+
+		cout << ".";
+
 		while (!fichier.eof()) {
 			fichier.ignore(1000, '\n');
 			i++;
@@ -839,10 +835,12 @@ void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 		fichier.seekg(0, std::ios::beg);
 
 		for (int j = 0; j < i - 1; j++) {
-
+			cout << ".";
 			getline(fichier, contenu, '\n');
 			(*listeJoueur)[j] = new Joueur(contenu);
 		}
+
+		cout << endl;
 
 		fichier.close();
 	}
@@ -853,7 +851,8 @@ void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 		(*listeJoueur)[0] = NULL;
 	}
 
-	cout << "Chargement des Parties !" << endl;
+
+	cout << "Chargement des Parties .";
 
 	/* On charge maintenant les parties */
 
@@ -863,7 +862,9 @@ void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 	{
 		string contenu;  // déclaration d'une chaîne qui contiendra la ligne lue
 
+		cout << ".";
 		int i = 0;
+
 		while (!fichier2.eof()) {
 			fichier2.ignore(1000, '\n');
 			i++;
@@ -878,49 +879,97 @@ void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 
 		for (int j = 0; j < i - 1; j++) {
 
+			cout << ".";
+
 
 			/* On charge chaque fichier */
 
 			string fileName;
-
 			getline(fichier2, contenu, '\n');
-
 			fileName = "save/parties/" + contenu + ".txt";
-
 
 			ifstream tmp(fileName, ios::in);  // on ouvre en lecture
 
 
-			getline(tmp, contenu, '\n'); // Date
+			/* On parcours les différentes propriétées du fichier */
 
+
+			// Date
+
+			getline(tmp, contenu, '\n');
 			(*listePartie)[j] = new Partie(contenu);
 
 
+			// Joueur 1
 
-			getline(tmp, contenu, '\n'); // Joueur 1
-
+			getline(tmp, contenu, '\n'); 
 			for (int k = 0; (*listeJoueur)[k] != NULL; k++) {
 				if ((*listeJoueur)[k]->getNom() == contenu) {
-
 					(*listePartie)[j]->addJoueur((*listeJoueur)[k]);
 					break;
 				}
 			}
 
 
-			getline(tmp, contenu, '\n'); // Joueur 2
+			// Joueur 2
 
+			getline(tmp, contenu, '\n');
 			for (int k = 0; (*listeJoueur)[k] != NULL; k++) {
 				if ((*listeJoueur)[k]->getNom() == contenu) {
-
 					(*listePartie)[j]->addJoueur((*listeJoueur)[k]);
 					break;
 				}
 			}
 
-			getline(tmp, contenu, '\n'); // Type Partie
 
+			// Type de partie
+
+			getline(tmp, contenu, '\n');
 			(*listePartie)[j]->setTypePartie(atoi(contenu.c_str()));
+
+
+			// Tableaux d'initialisation
+
+			for (int k = 0; k < TAILLE; k++) {
+
+				getline(tmp, contenu, '_'); // Piece par Piece
+				if (contenu == "NULL") {
+					tmp.ignore(5, ' ');
+					(*listePartie)[i]->setPBlanc(j, NULL);
+				}
+				else {
+					int color;
+					int state;
+
+					tmp >> color;
+					tmp.ignore(1); // UNDERSCORE
+					tmp >> state;
+					tmp.ignore(1); // SPACE
+
+
+					if (contenu == "Tour") {
+						(*(*listePartie)[j])(l, k) = new Tour(color, state);
+					}
+					else if (contenu == "Fou") {
+						(*(*listePartie)[j])(l, k) = new Fou(color, state);
+					}
+					else if (contenu == "Roi") {
+						(*(*listePartie)[j])(l, k) = new Roi(color, state);
+					}
+					else if (contenu == "Reine") {
+						(*(*listePartie)[j])(l, k) = new Reine(color, state);
+					}
+					else if (contenu == "Cavalier") {
+						(*(*listePartie)[j])(l, k) = new Cavalier(color, state);
+					}
+					else if (contenu == "Pion") {
+						(*(*listePartie)[j])(l, k) = new Pion(color, state);
+					}
+				}
+			}
+			tmp.ignore(2, '\n');
+
+
 
 
 			// Chargement du plateau
@@ -1010,11 +1059,33 @@ void saveParties(Partie***& listePartie) {
 
 		if (fichier)  // si l'ouverture a réussi
 		{
+
+			/* On commence par enregistrer les différentes propriétées de la partie */
+
 			fichier << (*listePartie)[i]->getDate() << endl
 				<< (*listePartie)[i]->getJ1()->getNom() << endl
 				<< (*listePartie)[i]->getJ2()->getNom() << endl
-				<< (*listePartie)[i]->getTypePartie() << endl;
+				<< (*listePartie)[i]->getTypePartie() << endl
+				<< (*listePartie)[i]->getIsWhiteToPlay() << endl;
 
+			/* On enregistre les deux tableaux de pièce*/
+
+			for (int j = 0; j < 4; j++) {
+				if ((*listePartie)[i]->getPBlanc(j) != NULL)
+					fichier << (*listePartie)[i]->getPBlanc(j)->getName() << "_" << (*listePartie)[i]->getPBlanc(j)->getColor() << "_" << (*listePartie)[i]->getPBlanc(j)->getState() << " ";
+				else
+					fichier << "NULL_0_0 ";
+			}
+
+			for (int j = 0; j < 4; j++) {
+				if ((*listePartie)[i]->getPNoir(j) != NULL)
+					fichier << (*listePartie)[i]->getPNoir(j)->getName() << "_" << (*listePartie)[i]->getPNoir(j)->getColor() << "_" << (*listePartie)[i]->getPNoir(j)->getState() << " ";
+				else
+					fichier << "NULL_0_0 ";
+			}
+
+
+			/* On enregistre le plateau */
 
 			for (int j = 0; j < TAILLE; j++) {
 				for (int k = 0; k < TAILLE; k++) {

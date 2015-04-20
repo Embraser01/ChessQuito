@@ -14,6 +14,14 @@
 #include "Joueur.h"
 #include "Piece.h"
 
+#include "Fou.h"
+#include "Tour.h"
+#include "Cavalier.h"
+#include "Reine.h"
+#include "Roi.h"
+#include "Pion.h"
+
+
 using namespace std;
 
 const int TAILLE=4;
@@ -32,13 +40,20 @@ private:
 
 	Plateau p; // Un échiquier par partie
 
+	Piece* pBlanc[4]; // Contient les pièces pour l'initialisation
+	Piece* pNoir[4];
+
 	int typePartie; // Contient le numéro de la règle utilisé
+
 
 	bool isWhiteToPlay; // Permet de s'arreter dans une partie
 	int nCoup; // Comptabilise le nombre de coup fait durant la partie
 	int nDernierePrise; // Contient le numero du coup de la dernière prise
 
+	bool initPiece(Piece*, char[3]); // Gère le placement initial des pièces privée car appelé par la fonction placePiece uniquement
+
 public:
+
 	Partie(); // Date généré automatiquement
 	Partie(string); // Date
 
@@ -52,8 +67,15 @@ public:
 	bool getIsWhiteToPlay() const { return isWhiteToPlay; }
 
 
-	void setTypePartie(int); // Met le type de partie ( num de la regle)
-	void setIsWhiteTiPlay(bool);
+	Piece* getPNoir(int) const; // Renvoi la pièce i du tableau d'init
+	Piece* getPBlanc(int) const; 
+
+	void setPNoir(int, Piece*);
+	void setPBnoir(int, Piece*);
+
+
+	void setTypePartie(int); // Met le type de partie ( num de la regle - possible une seule fois)
+	void setIsWhiteTiPlay(bool); // Permet de choisir le prochain joueur
 
 	void affichePlateau(ostream& flux) const; // Permet cout << mPartie;
 
@@ -64,7 +86,7 @@ public:
 	Piece* operator() (char[3]) const; // Permet de faire mPartie('a0');
 
 	bool placePiece(Piece*, char[3]); // Gère les déplacements
-	bool initPiece(Piece*, char[3]); // Gère le placement initial des pièces
+	bool placePiece(Piece*, int, int);
 
 	bool addJoueur(Joueur*); // Permet d'ajouter les joueurs à la partie
 
