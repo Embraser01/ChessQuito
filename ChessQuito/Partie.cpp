@@ -24,6 +24,11 @@ Partie::Partie()
 	nCoup = 0;
 	nDernierePrise = -1;
 
+	for (int i = 0; i < 4; i++) {
+		pNoir[i] = NULL;
+		pBlanc[i] = NULL;
+	}
+
 	for(int i = 0; i < TAILLE;i++)
 		for(int j = 0; j < TAILLE; j++)
 			p[i][j] = NULL;
@@ -40,6 +45,11 @@ Partie::Partie(string date)
 
 	nCoup = 0;
 	nDernierePrise = -1;
+
+	for (int i = 0; i < 4; i++) {
+		pNoir[i] = NULL;
+		pBlanc[i] = NULL;
+	}
 
 	for(int i = 0; i < TAILLE;i++)
 		for(int j = 0; j < TAILLE; j++)
@@ -101,11 +111,16 @@ Piece * Partie::getPBlanc(int i) const
 	return pBlanc[i];
 }
 
-
-void Partie::setPNoir(int i, Piece* piece) {
-
-
+void Partie::setPNoir(int i, Piece * piece)
+{
+	pNoir[i] = piece;
 }
+
+void Partie::setPBlanc(int i, Piece * piece)
+{
+	pBlanc[i] = piece;
+}
+
 
 
 void Partie::setTypePartie(int type){

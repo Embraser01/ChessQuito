@@ -930,12 +930,12 @@ void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 
 			// Tableaux d'initialisation
 
-			for (int k = 0; k < TAILLE; k++) {
+			for (int k = 0; k < 4; k++) {
 
 				getline(tmp, contenu, '_'); // Piece par Piece
 				if (contenu == "NULL") {
 					tmp.ignore(5, ' ');
-					(*listePartie)[i]->setPBlanc(j, NULL);
+					(*listePartie)[i]->setPBlanc(k, NULL);
 				}
 				else {
 					int color;
@@ -948,26 +948,66 @@ void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 
 
 					if (contenu == "Tour") {
-						(*(*listePartie)[j])(l, k) = new Tour(color, state);
+						(*listePartie)[i]->setPBlanc(k, new Tour(color, state));
 					}
 					else if (contenu == "Fou") {
-						(*(*listePartie)[j])(l, k) = new Fou(color, state);
+						(*listePartie)[i]->setPBlanc(k, new Fou(color, state));
 					}
 					else if (contenu == "Roi") {
-						(*(*listePartie)[j])(l, k) = new Roi(color, state);
+						(*listePartie)[i]->setPBlanc(k, new Roi(color, state));
 					}
 					else if (contenu == "Reine") {
-						(*(*listePartie)[j])(l, k) = new Reine(color, state);
+						(*listePartie)[i]->setPBlanc(k, new Reine(color, state));
 					}
 					else if (contenu == "Cavalier") {
-						(*(*listePartie)[j])(l, k) = new Cavalier(color, state);
+						(*listePartie)[i]->setPBlanc(k, new Cavalier(color, state));
 					}
 					else if (contenu == "Pion") {
-						(*(*listePartie)[j])(l, k) = new Pion(color, state);
+						(*listePartie)[i]->setPBlanc(k, new Pion(color, state));
 					}
 				}
 			}
 			tmp.ignore(2, '\n');
+
+			for (int k = 0; k < 4; k++) {
+
+				getline(tmp, contenu, '_'); // Piece par Piece
+				if (contenu == "NULL") {
+					tmp.ignore(5, ' ');
+					(*listePartie)[i]->setPNoir(k, NULL);
+				}
+				else {
+					int color;
+					int state;
+
+					tmp >> color;
+					tmp.ignore(1); // UNDERSCORE
+					tmp >> state;
+					tmp.ignore(1); // SPACE
+
+
+					if (contenu == "Tour") {
+						(*listePartie)[i]->setPNoir(k, new Tour(color, state));
+					}
+					else if (contenu == "Fou") {
+						(*listePartie)[i]->setPNoir(k, new Fou(color, state));
+					}
+					else if (contenu == "Roi") {
+						(*listePartie)[i]->setPNoir(k, new Roi(color, state));
+					}
+					else if (contenu == "Reine") {
+						(*listePartie)[i]->setPNoir(k, new Reine(color, state));
+					}
+					else if (contenu == "Cavalier") {
+						(*listePartie)[i]->setPNoir(k, new Cavalier(color, state));
+					}
+					else if (contenu == "Pion") {
+						(*listePartie)[i]->setPNoir(k, new Pion(color, state));
+					}
+				}
+			}
+			tmp.ignore(2, '\n');
+
 
 
 
@@ -1062,9 +1102,19 @@ void saveParties(Partie***& listePartie) {
 
 			/* On commence par enregistrer les différentes propriétées de la partie */
 
-			fichier << (*listePartie)[i]->getDate() << endl
-				<< (*listePartie)[i]->getJ1()->getNom() << endl
-				<< (*listePartie)[i]->getJ2()->getNom() << endl
+			fichier << (*listePartie)[i]->getDate() << endl;
+
+			if ((*listePartie)[i]->getJ1() == NULL)
+				fichier << "_é!#charSpeciauxà@_" << endl;
+			else
+				fichier << (*listePartie)[i]->getJ1()->getNom() << endl;
+
+			if ((*listePartie)[i]->getJ2() == NULL)
+				fichier << "_é!#charSpeciauxà@_" << endl;
+			else
+				fichier << (*listePartie)[i]->getJ2()->getNom() << endl;
+
+			fichier << (*listePartie)[i]->getJ2()->getNom() << endl
 				<< (*listePartie)[i]->getTypePartie() << endl
 				<< (*listePartie)[i]->getIsWhiteToPlay() << endl;
 

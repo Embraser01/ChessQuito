@@ -71,7 +71,7 @@ public:
 	Piece* getPBlanc(int) const; 
 
 	void setPNoir(int, Piece*);
-	void setPBnoir(int, Piece*);
+	void setPBlanc(int, Piece*);
 
 
 	void setTypePartie(int); // Met le type de partie ( num de la regle - possible une seule fois)

@@ -38,9 +38,23 @@ const int CASE_X = 100; // Largeur d'une case
 const int CASE_Y = 100; // Hauteur d'une case
 
 
+typedef struct ImgPions {
+
+	SDL_Surface* cavalier;
+	SDL_Surface* fou;
+	SDL_Surface* reine;
+	SDL_Surface* roi;
+	SDL_Surface* pion;
+	SDL_Surface* tour;
+
+} ImgPions;
+
+
 class UserInterface
 {
 private:
+
+	
 
 	SDL_Surface* ecran; // Contient l'ecran d'affichage
 	TTF_Font* police; // Police d'écriture pour tout l'affichage
@@ -68,11 +82,11 @@ private:
 	Bouton* btnValider;
 
 	Bouton* btnPlayPartie;
+	Bouton* btnSetJoueurPartie;
 	Bouton* btnNewPartie;
 	Bouton* btnDeletePartie;
 
 	Bouton** btnListe;
-
 
 
 	EditBox* eb; // EditBox pour le pseudo du joueur
@@ -85,13 +99,20 @@ private:
 
 
 
+	ImgPions imgNoir; // Liste des images des pièces Noirs
+	ImgPions imgBlanc; // Liste des images des pièces Blanches
+
 	int checkEventMenu(int x, int y); // Permet de naviguer dans les différents menus, si mode == 0 alors on verifie que la barre laterale
 
 	char* checkEventPartie(int x, int y); // Renvoie les coordonnées cliquer sur l'echiquier (ex: "a2");
 	int checkEventListe(int x, int y); // Change l'état de selection en l'id de la partie/ du joueur ou -1 si ailleurs
 	int checkEventEditBox(); // Gère ( a peu près) l'edition
 
+
+
 	void playPartie(Partie*& mPartie); // Gère une partie de A à Z 
+
+	void dPartie(Partie *& mPartie); // Affiche une partie
 
 public:
 	UserInterface(Joueur***, Partie***); // Liste des joueurs, liste des parties
