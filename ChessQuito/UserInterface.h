@@ -38,7 +38,7 @@ const int CASE_X = 100; // Largeur d'une case
 const int CASE_Y = 100; // Hauteur d'une case
 
 
-typedef struct ImgPions {
+typedef struct ImgPions { // Structure qui contient les images de pions
 
 	SDL_Surface* cavalier;
 	SDL_Surface* fou;
@@ -113,7 +113,6 @@ private:
 
 	int checkEventMenu(int x, int y); // Permet de naviguer dans les différents menus, si mode == 0 alors on verifie que la barre laterale
 
-	char* checkEventPartie(int x, int y); // Renvoie les coordonnées cliquer sur l'echiquier (ex: "a2");
 	int checkEventListe(int x, int y); // Change l'état de selection en l'id de la partie/ du joueur ou -1 si ailleurs
 	int checkEventEditBox(); // Gère ( a peu près) l'edition
 
@@ -122,16 +121,15 @@ private:
 	void playPartie(Partie*& mPartie); // Gère une partie de A à Z 
 
 	void dPartie(Partie *& mPartie); // Affiche une partie
+	void dPlateau(); // Affiche la partie tableau
+	void dNavBar(); // Affiche la barre de navigation
+
 
 public:
 	UserInterface(Joueur***, Partie***); // Liste des joueurs, liste des parties
 
 
 	void start(); // Lance la gestion des events
-
-
-	void dPlateau(); // Affiche la partie tableau
-	void dNavBar(); // Affiche la barre de navigation
 
 	
 	int getMode() { return mode; }

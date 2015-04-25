@@ -1,15 +1,14 @@
 #include "UserInterface.h"
 
 
-
 UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 {
 	
-	this->listeJoueur = listeJoueur;
+	this->listeJoueur = listeJoueur; // On enregistre les listes des joueurs et des parties
 	this->listePartie = listePartie;
 
 	mode = 1; // Page d'accueil 
-	selection = -1;
+	selection = -1; // Pas de selection 
 
 
 	/* Initialisation de la SDL */
@@ -28,7 +27,7 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 	SDL_WM_SetCaption("ChessQuito | Projet C++ | Fernandes Marc-Antoine", NULL);
 
 
-	/* On charge les pions et on redimenssionne à la taille de la case*/
+	/* On charge les images et on redimenssionne à la taille de la case*/
 
 	imgNoir.tour = IMG_Load("res/n_tour.png");
 	imgNoir.roi = IMG_Load("res/n_roi.png");
@@ -78,17 +77,17 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 	resizeImage(imgBlanc.pion, CASE_Y, CASE_Y, false);
 
 
-
-
 	/* On crée les boutons necessaires et on met les autres à NULL */
 
-	btnColor = SDL_MapRGB(ecran->format, 129, 199, 132);
-	btnFontColor = { 0,0,0 };
+	btnColor = SDL_MapRGB(ecran->format, 129, 199, 132); // Couleur du fond d'un bouton (vert)
+	btnFontColor = { 0,0,0 }; // Couleur d'écriture d'un bouton (noir)
 	
 	btnSortir = new Bouton(ecran, police, "SORTIR", WIDTH + 10, TY - 75, TX - WIDTH - 20, 70, btnColor, btnFontColor);
 
 	btnGestJoueurs = new Bouton(ecran, police, "Gestionnaire Joueurs", WIDTH + 10, 100, TX - WIDTH - 20, 70, btnColor, btnFontColor);
 	btnGestParties = new Bouton(ecran, police, "Gestionnaire Parties", WIDTH + 10, 200, TX - WIDTH - 20, 70, btnColor, btnFontColor);
+
+	// On initialise les boutons à leur première utilisation
 
 	btnAddJoueur = NULL;
 	btnUpdateJoueur = NULL;
@@ -103,12 +102,11 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 	btnListe = NULL;
 
 
-	/* On initialise l'EditBox */
+	/* On initialise l'EditBox (Noir sur fond Blanc) */
 
 	Uint32 bgColor = SDL_MapRGB(ecran->format, 255, 255, 255);
 	SDL_Color fontColor = { 0, 0, 0 };
 
-	
 	eb = new EditBox(ecran, police, 300, 300, 250, 45, bgColor, fontColor);
 
 
@@ -127,18 +125,16 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 	dNavBar();
 	dPlateau();
 	
-
 	SDL_Flip(ecran);
 }
-
-
 
 
 void UserInterface::start()
 {
 
-	bool continuer = true;
+	/* Démarre l'interface */
 
+	bool continuer = true;
 
 	SDL_Event event;
 
@@ -146,6 +142,9 @@ void UserInterface::start()
 
 		SDL_WaitEvent(&event);
 		switch (event.type) {
+
+
+		/* Event de sorti */
 
 		case SDL_QUIT:
 			continuer = 0;
@@ -157,22 +156,22 @@ void UserInterface::start()
 				continuer = false;
 			break;
 
-		case SDL_MOUSEBUTTONDOWN:
-			int action = checkEventMenu(event.button.x, event.button.y); 
 
-			if (action == 0)
+		/* Event du menu */
+
+		case SDL_MOUSEBUTTONDOWN:
+
+			int action = checkEventMenu(event.button.x, event.button.y); // On recupère si possible l'action
+
+			if (action == 0) // Si SORTIR
 				continuer = false;
 
 			else if (action == -1) { // Pas dans le menu
 
-				if (mode == 0) {
-					checkEventPartie(event.button.x, event.button.y);
-				}
-				else if (mode == 2 || mode == 3) {
-
+				if (mode == 2 || mode == 3) { // Liste joueurs + parties
 					checkEventListe(event.button.x, event.button.y);
 				}
-				else if (mode == 4 || mode == 5) {
+				else if (mode == 4 || mode == 5) { // Edit Box
 
 					int jsp = checkEventEditBox();
 						
@@ -191,13 +190,14 @@ void UserInterface::start()
 }
 
 
+/* Affichage menus */
 
 void UserInterface::dPlateau()
 {
 	SDL_FillRect(ecran, &plateau, SDL_MapRGB(ecran->format, 207, 216, 220)); // On met l'arriere plan
 
 
-	if (mode == 1) {
+	if (mode == 1) { // Accueil
 
 		SDL_Surface* tmp1;
 		SDL_Surface* tmp2;
@@ -374,6 +374,7 @@ void UserInterface::dPlateau()
 		eb->drawBox();
 		
 	}
+	
 	SDL_Flip(ecran);
 }
 
@@ -446,6 +447,7 @@ void UserInterface::dNavBar()
 }
 
 
+/* PartiePlayer */
 
 void UserInterface::playPartie(Partie*& mPartie) {
 
@@ -584,9 +586,10 @@ void UserInterface::playPartie(Partie*& mPartie) {
 					
 
 					for (int i = 0; (*listeJoueur)[i] != NULL; i++) {
-						if (tmp == (*listeJoueur)[i]->getNom())
+						if (tmp == (*listeJoueur)[i]->getNom()) {
 							mPartie->addJoueur((*listeJoueur)[i]);
-						cout << (*listeJoueur)[i]->getNom() << endl;
+							break;
+						}
 					}
 					
 
@@ -601,12 +604,10 @@ void UserInterface::playPartie(Partie*& mPartie) {
 				continuer = 0;
 			}
 
-
 			break;
 		}
 	}
 }
-
 
 void UserInterface::dPartie(Partie*& mPartie) {
 
@@ -628,11 +629,10 @@ void UserInterface::dPartie(Partie*& mPartie) {
 
 
 
-
 	if ((*listePartie)[selection]->getJ1() == NULL || (*listePartie)[selection]->getJ2() == NULL) {
 
 		if(btnSetJoueurPartie == NULL)
-			btnSetJoueurPartie = new Bouton(ecran, police, "Ajouter un joueur à la partie (En maintenance ==> console)", 100, 10, 300, 50, btnColor, btnFontColor);
+			btnSetJoueurPartie = new Bouton(ecran, police, "Ajouter un joueur à la partie (En maintenance ==> console)",150, 450, 600, 100, btnColor, btnFontColor);
 
 		btnSetJoueurPartie->afficherBtn();
 
@@ -641,19 +641,18 @@ void UserInterface::dPartie(Partie*& mPartie) {
 
 		/* On affiche les pions des joueurs */
 
-
 		SDL_Rect rectBlanc;
 		SDL_Rect rectNoir;
 
 		rectBlanc.h = CASE_Y + 8;
 		rectBlanc.w = 4 * CASE_X + 8;
-		rectBlanc.x = 96;
-		rectBlanc.y = 96;
+		rectBlanc.x = 246;
+		rectBlanc.y = 120;
 
 		rectNoir.h = CASE_Y + 8;
 		rectNoir.w = 4 * CASE_X + 8;
-		rectNoir.x = 96;
-		rectNoir.y = 300 + CASE_Y * TAILLE + 20;
+		rectNoir.x = 246;
+		rectNoir.y = TY - 20 - CASE_Y;
 
 
 		SDL_FillRect(ecran, &rectBlanc, SDL_MapRGB(ecran->format, 255, 255, 255)); // On met l'arriere plan
@@ -671,8 +670,9 @@ void UserInterface::dPartie(Partie*& mPartie) {
 
 		for (int i = 0; i < 4; i++) {
 
-			Uint32 color;
+			/* On choisi la couleur en fonction de ce qu'on veut (select, paire, etc...) */
 
+			Uint32 color;
 			
 			if (xPartie == -2 && i == yPartie) {
 				color = SDL_MapRGB(ecran->format, 255, 0, 0);
@@ -833,8 +833,8 @@ void UserInterface::dPartie(Partie*& mPartie) {
 		SDL_Rect contour;
 		contour.h = CASE_Y * TAILLE + 24;
 		contour.w = CASE_X * TAILLE + 24;
-		contour.x = 88;
-		contour.y = 288;
+		contour.x = 238;
+		contour.y = 268;
 
 		if(mPartie->getIsWhiteToPlay())
 			SDL_FillRect(ecran, &contour, SDL_MapRGB(ecran->format, 255, 255, 255)); // On met l'arriere plan
@@ -843,24 +843,26 @@ void UserInterface::dPartie(Partie*& mPartie) {
 
 		contour.h = CASE_Y * TAILLE + 8;
 		contour.w = CASE_X * TAILLE + 8;
-		contour.x = 96;
-		contour.y = 296;
+		contour.x = 246;
+		contour.y = 276;
 
 		SDL_FillRect(ecran, &contour, SDL_MapRGB(ecran->format, 144, 164, 174)); // On met l'arriere plan
 
 		SDL_Rect caseRect;
 		caseRect.h = CASE_Y;
 		caseRect.w = CASE_X;
-		caseRect.x = 100;
-		caseRect.y = 300;
+		caseRect.x = 250;
+		caseRect.y = 280;
 
 
 		for (int i = 0; i < TAILLE; i++) {
-			caseRect.x = 100;
+			caseRect.x = 250;
 
 			for (int j = 0; j < TAILLE; j++) {
-				Uint32 color;
 
+				/* On choisi la couleur en fonction de ce qu'on veut (select, paire, etc...) */
+
+				Uint32 color;
 
 				if (i == xPartie && j == yPartie) {
 					color = SDL_MapRGB(ecran->format, 255, 0, 0);
@@ -881,6 +883,8 @@ void UserInterface::dPartie(Partie*& mPartie) {
 				SDL_Rect posPiece;
 				posPiece.y = caseRect.y;
 
+
+				/* On affiche la pièce correspondante */
 
 				if ((*mPartie)(i, j) == NULL) {
 
@@ -943,13 +947,15 @@ void UserInterface::dPartie(Partie*& mPartie) {
 
 				caseRect.x += CASE_X;
 			}
-
 			caseRect.y += CASE_Y;
 		}
 	}
+
 	SDL_Flip(ecran);
 }
 
+
+/* CheckEvent */
 
 int UserInterface::checkEventMenu(int x, int y)
 {
@@ -1054,14 +1060,6 @@ int UserInterface::checkEventMenu(int x, int y)
 	return -1;
 }
 
-
-char * UserInterface::checkEventPartie(int x, int y)
-{
-
-
-	return NULL;
-}
-
 int UserInterface::checkEventListe(int x, int y)
 {
 	if (mode != 2 && mode != 3)
@@ -1150,7 +1148,7 @@ int UserInterface::checkEventEditBox()
 }
 
 
-
+/* Destructeur */
 
 UserInterface::~UserInterface()
 {
@@ -1204,11 +1202,13 @@ UserInterface::~UserInterface()
 	SDL_FreeSurface(imgBlanc.cavalier);
 	SDL_FreeSurface(imgBlanc.pion);
 
+	SDL_FreeSurface(croix);
 
 
 	/* On delete l'EditBox */
 
 	delete eb;
+
 
 	/* On ferme les modules */
 
