@@ -41,7 +41,7 @@ void gestPartie(Partie***&);
 
 void setJoueurPartie(Joueur***,Partie***);
 
-void initPartie(Partie*);
+//void initPartie(Partie*);
 void playPartie(Partie*);
 
 void chargerJeu(Partie***&, Joueur***&);
@@ -399,7 +399,7 @@ void gestPartie(Partie***& listePartie) {
 			if (atoi(tmp2.c_str()) < i && atoi(tmp2.c_str()) >= 0) {
 
 				if (!(*listePartie)[atoi(tmp2.c_str())]->isPartieInit())
-					initPartie((*listePartie)[atoi(tmp2.c_str())]);
+					//initPartie((*listePartie)[atoi(tmp2.c_str())]);
 
 				playPartie((*listePartie)[atoi(tmp2.c_str())]);
 			}
@@ -486,203 +486,203 @@ void setJoueurPartie(Joueur*** listeJoueur, Partie*** listePartie) {
 
 /* Interfaces jeu */
 
-void initPartie(Partie* mPartie) { // Permet aux joueurs de placer leurs pièces en fonction de la règle qu'ils ont choisie
-
-	system("cls"); // On efface la console
-
-				   /* On verifie que les deux joueurs sont bien dans la partie */
-
-	if (mPartie->getJ1() == NULL || mPartie->getJ2() == NULL) {
-		std::cout << "Il n'y a pas assez de joueur" << endl << endl;
-		return;
-	}
-
-
-	/* Selection du type de la partie ( le numero de regle) */
-
-
-	// Fait 2 tableaux de 4 piece ( un noir, un blanc)
-
-	Piece* pBlanc[4];
-	Piece* pNoir[4];
-
-
-	// Tant que la regle n'est pas choisi
-
-	while (mPartie->getTypePartie() == -1) {
-
-		system("cls"); // On efface la console
-
-
-		cout << "Quelle regle voulez-vous utiliser ?" << endl
-			<< "1 \t 2 \t 3" << endl;
-
-		char tmp[4];
-
-		cin >> tmp;
-
-		switch (tmp[0]) {
-
-		case '1':
-			cout << "Vous avez choisi la regle 1." << endl
-				<< "Vous aurez les pièces suivantes :" << endl
-				<< "Reine \t Tour \t Fou \t Cavalier" << endl;
-			mPartie->setTypePartie(1);
-
-			pBlanc[0] = new Reine(0);
-			pBlanc[1] = new Tour(0);
-			pBlanc[2] = new Fou(0);
-			pBlanc[3] = new Cavalier(0);
-
-			pNoir[0] = new Reine(1);
-			pNoir[1] = new Tour(1);
-			pNoir[2] = new Fou(1);
-			pNoir[3] = new Cavalier(1);
-			break;
-
-		case '2':
-			cout << "Vous avez choisi la regle 2." << endl
-				<< "Vous aurez les pièces suivantes :" << endl
-				<< "Pion \t Tour \t Fou \t Cavalier" << endl;
-			mPartie->setTypePartie(2);
-
-			pBlanc[0] = new Pion(0);
-			pBlanc[1] = new Tour(0);
-			pBlanc[2] = new Fou(0);
-			pBlanc[3] = new Cavalier(0);
-
-			pNoir[0] = new Pion(1);
-			pNoir[1] = new Tour(1);
-			pNoir[2] = new Fou(1);
-			pNoir[3] = new Cavalier(1);
-			break;
-
-		case '3':
-			cout << "Vous avez choisi la regle 3." << endl
-				<< "Vous aurez les pièces suivantes :" << endl
-				<< "Roi \t Tour \t Fou \t Cavalier" << endl;
-			mPartie->setTypePartie(3);
-
-			pBlanc[0] = new Roi(0);
-			pBlanc[1] = new Tour(0);
-			pBlanc[2] = new Fou(0);
-			pBlanc[3] = new Cavalier(0);
-
-			pNoir[0] = new Roi(1);
-			pNoir[1] = new Tour(1);
-			pNoir[2] = new Fou(1);
-			pNoir[3] = new Cavalier(1);
-			break;
-
-		default:
-			cout << "Cette regle n'existe pas" << endl << endl;
-			break;
-		}
-	}
-
-
-	/* On laisse maintenant les joueurs placer leurs pieces */
-
-
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 2; j++) {
-
-
-			cout << endl << endl << *mPartie << endl;
-
-			string pName;
-			char add[4];
-
-
-			cout << endl << " C'est au ";
-			if (j == 0)
-				cout << "Blanc";
-			else
-				cout << "Noir";
-
-
-			cout << " de placer son " << i + 1 << " eme pion" << endl << endl;
-
-			cout << "Quel pion voulez-vous placer :" << endl;
-
-			// On affiche que les pions disponible
-
-			for (int k = 0; k < 4; k++) {
-				if (j == 0 && pBlanc[k] != NULL)
-					cout << pBlanc[k]->getName() << " \t ";
-				else if (j == 1 && pNoir[k] != NULL)
-					cout << pNoir[k]->getName() << " \t ";
-			}
-			cout << endl;
-
-			cin >> pName;
-
-
-			/* On recherche l'id de la piece par rapport au nom */
-
-			int idPiece = -1;
-
-			for (int k = 0; k < 4; k++) {
-				if (j == 0 && pBlanc[k] != NULL) {
-					if (pName == pBlanc[k]->getName())
-						idPiece = k;
-				}
-				else if (j == 1 && pNoir[k] != NULL) {
-					if (pName == pNoir[k]->getName())
-						idPiece = k;
-				}
-			}
-
-			if (idPiece == -1) { // Si la piece n'est pas trouvé
-
-				system("cls"); // On efface la console
-
-				cout << "Cette piece nest pas disponible ou n'existe pas ==> Recommencez" << endl;
-				j--;
-			}
-			else {
-
-
-				/* On demande à l'utilisateur où le placer */
-
-				cout << "Ou voulez-vous placer votre " << pName << " : " << endl << "De type (\"a2\")" << endl;
-
-				cin >> add;
-
-				system("cls"); // On efface la console
-
-
-							   /* On essaye de placer les pièces */
-
-				if (j == 0) {  // Blanc
-					if (!mPartie->initPiece(pBlanc[idPiece], add)) {
-
-						cout << "Emplacement deja pris ou hors du plateau ==> Recommencez" << endl;
-						j--;
-					}
-					else { // On supprime la pièce du tableau temporaire
-
-						pBlanc[idPiece] = NULL;
-					}
-				}
-				else if (j == 1) {  // Noir
-					if (!mPartie->initPiece(pNoir[idPiece], add)) {
-
-						cout << "Emplacement deja pris ou hors du plateau ==> Recommencez" << endl;
-						j--;
-					}
-					else { // On supprime la pièce du tableau temporaire
-
-						pNoir[idPiece] = NULL;
-					}
-				}
-			}
-		}
-	}
-
-	cout << "Fin de l'initialisation !" << endl << *mPartie << endl << endl;
-}
-
+//void initPartie(Partie* mPartie) { // Permet aux joueurs de placer leurs pièces en fonction de la règle qu'ils ont choisie
+//
+//	system("cls"); // On efface la console
+//
+//				   /* On verifie que les deux joueurs sont bien dans la partie */
+//
+//	if (mPartie->getJ1() == NULL || mPartie->getJ2() == NULL) {
+//		std::cout << "Il n'y a pas assez de joueur" << endl << endl;
+//		return;
+//	}
+//
+//
+//	/* Selection du type de la partie ( le numero de regle) */
+//
+//
+//	// Fait 2 tableaux de 4 piece ( un noir, un blanc)
+//
+//	Piece* pBlanc[4];
+//	Piece* pNoir[4];
+//
+//
+//	// Tant que la regle n'est pas choisi
+//
+//	while (mPartie->getTypePartie() == -1) {
+//
+//		system("cls"); // On efface la console
+//
+//
+//		cout << "Quelle regle voulez-vous utiliser ?" << endl
+//			<< "1 \t 2 \t 3" << endl;
+//
+//		char tmp[4];
+//
+//		cin >> tmp;
+//
+//		switch (tmp[0]) {
+//
+//		case '1':
+//			cout << "Vous avez choisi la regle 1." << endl
+//				<< "Vous aurez les pièces suivantes :" << endl
+//				<< "Reine \t Tour \t Fou \t Cavalier" << endl;
+//			mPartie->setTypePartie(1);
+//
+//			pBlanc[0] = new Reine(0);
+//			pBlanc[1] = new Tour(0);
+//			pBlanc[2] = new Fou(0);
+//			pBlanc[3] = new Cavalier(0);
+//
+//			pNoir[0] = new Reine(1);
+//			pNoir[1] = new Tour(1);
+//			pNoir[2] = new Fou(1);
+//			pNoir[3] = new Cavalier(1);
+//			break;
+//
+//		case '2':
+//			cout << "Vous avez choisi la regle 2." << endl
+//				<< "Vous aurez les pièces suivantes :" << endl
+//				<< "Pion \t Tour \t Fou \t Cavalier" << endl;
+//			mPartie->setTypePartie(2);
+//
+//			pBlanc[0] = new Pion(0);
+//			pBlanc[1] = new Tour(0);
+//			pBlanc[2] = new Fou(0);
+//			pBlanc[3] = new Cavalier(0);
+//
+//			pNoir[0] = new Pion(1);
+//			pNoir[1] = new Tour(1);
+//			pNoir[2] = new Fou(1);
+//			pNoir[3] = new Cavalier(1);
+//			break;
+//
+//		case '3':
+//			cout << "Vous avez choisi la regle 3." << endl
+//				<< "Vous aurez les pièces suivantes :" << endl
+//				<< "Roi \t Tour \t Fou \t Cavalier" << endl;
+//			mPartie->setTypePartie(3);
+//
+//			pBlanc[0] = new Roi(0);
+//			pBlanc[1] = new Tour(0);
+//			pBlanc[2] = new Fou(0);
+//			pBlanc[3] = new Cavalier(0);
+//
+//			pNoir[0] = new Roi(1);
+//			pNoir[1] = new Tour(1);
+//			pNoir[2] = new Fou(1);
+//			pNoir[3] = new Cavalier(1);
+//			break;
+//
+//		default:
+//			cout << "Cette regle n'existe pas" << endl << endl;
+//			break;
+//		}
+//	}
+//
+//
+//	/* On laisse maintenant les joueurs placer leurs pieces */
+//
+//
+//	for (int i = 0; i < 4; i++) {
+//		for (int j = 0; j < 2; j++) {
+//
+//
+//			cout << endl << endl << *mPartie << endl;
+//
+//			string pName;
+//			char add[4];
+//
+//
+//			cout << endl << " C'est au ";
+//			if (j == 0)
+//				cout << "Blanc";
+//			else
+//				cout << "Noir";
+//
+//
+//			cout << " de placer son " << i + 1 << " eme pion" << endl << endl;
+//
+//			cout << "Quel pion voulez-vous placer :" << endl;
+//
+//			// On affiche que les pions disponible
+//
+//			for (int k = 0; k < 4; k++) {
+//				if (j == 0 && pBlanc[k] != NULL)
+//					cout << pBlanc[k]->getName() << " \t ";
+//				else if (j == 1 && pNoir[k] != NULL)
+//					cout << pNoir[k]->getName() << " \t ";
+//			}
+//			cout << endl;
+//
+//			cin >> pName;
+//
+//
+//			/* On recherche l'id de la piece par rapport au nom */
+//
+//			int idPiece = -1;
+//
+//			for (int k = 0; k < 4; k++) {
+//				if (j == 0 && pBlanc[k] != NULL) {
+//					if (pName == pBlanc[k]->getName())
+//						idPiece = k;
+//				}
+//				else if (j == 1 && pNoir[k] != NULL) {
+//					if (pName == pNoir[k]->getName())
+//						idPiece = k;
+//				}
+//			}
+//
+//			if (idPiece == -1) { // Si la piece n'est pas trouvé
+//
+//				system("cls"); // On efface la console
+//
+//				cout << "Cette piece nest pas disponible ou n'existe pas ==> Recommencez" << endl;
+//				j--;
+//			}
+//			else {
+//
+//
+//				/* On demande à l'utilisateur où le placer */
+//
+//				cout << "Ou voulez-vous placer votre " << pName << " : " << endl << "De type (\"a2\")" << endl;
+//
+//				cin >> add;
+//
+//				system("cls"); // On efface la console
+//
+//
+//							   /* On essaye de placer les pièces */
+//
+//				if (j == 0) {  // Blanc
+//					if (!mPartie->initPiece(pBlanc[idPiece], add)) {
+//
+//						cout << "Emplacement deja pris ou hors du plateau ==> Recommencez" << endl;
+//						j--;
+//					}
+//					else { // On supprime la pièce du tableau temporaire
+//
+//						pBlanc[idPiece] = NULL;
+//					}
+//				}
+//				else if (j == 1) {  // Noir
+//					if (!mPartie->initPiece(pNoir[idPiece], add)) {
+//
+//						cout << "Emplacement deja pris ou hors du plateau ==> Recommencez" << endl;
+//						j--;
+//					}
+//					else { // On supprime la pièce du tableau temporaire
+//
+//						pNoir[idPiece] = NULL;
+//					}
+//				}
+//			}
+//		}
+//	}
+//
+//	cout << "Fin de l'initialisation !" << endl << *mPartie << endl << endl;
+//}
+//
 
 void playPartie(Partie* mPartie) {
 
@@ -910,6 +910,7 @@ void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 				}
 			}
 
+			
 
 			// Joueur 2
 
@@ -925,19 +926,28 @@ void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 			// Type de partie
 
 			getline(tmp, contenu, '\n');
-			(*listePartie)[j]->setTypePartie(atoi(contenu.c_str()));
+			(*listePartie)[j]->setTypePartie(atoi(contenu.c_str()), true);
+
+			
+			// IsWhiteToPlay
+
+			getline(tmp, contenu, '\n');
+			(*listePartie)[j]->setIsWhiteToPlay(atoi(contenu.c_str()));
 
 
 			// Tableaux d'initialisation
 
 			for (int k = 0; k < 4; k++) {
+				
 
 				getline(tmp, contenu, '_'); // Piece par Piece
 				if (contenu == "NULL") {
+					
 					tmp.ignore(5, ' ');
-					(*listePartie)[i]->setPBlanc(k, NULL);
+					(*listePartie)[j]->setPBlanc(k, NULL);
 				}
 				else {
+					
 					int color;
 					int state;
 
@@ -948,22 +958,22 @@ void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 
 
 					if (contenu == "Tour") {
-						(*listePartie)[i]->setPBlanc(k, new Tour(color, state));
+						(*listePartie)[j]->setPBlanc(k, new Tour(color, state));
 					}
 					else if (contenu == "Fou") {
-						(*listePartie)[i]->setPBlanc(k, new Fou(color, state));
+						(*listePartie)[j]->setPBlanc(k, new Fou(color, state));
 					}
 					else if (contenu == "Roi") {
-						(*listePartie)[i]->setPBlanc(k, new Roi(color, state));
+						(*listePartie)[j]->setPBlanc(k, new Roi(color, state));
 					}
 					else if (contenu == "Reine") {
-						(*listePartie)[i]->setPBlanc(k, new Reine(color, state));
+						(*listePartie)[j]->setPBlanc(k, new Reine(color, state));
 					}
 					else if (contenu == "Cavalier") {
-						(*listePartie)[i]->setPBlanc(k, new Cavalier(color, state));
+						(*listePartie)[j]->setPBlanc(k, new Cavalier(color, state));
 					}
 					else if (contenu == "Pion") {
-						(*listePartie)[i]->setPBlanc(k, new Pion(color, state));
+						(*listePartie)[j]->setPBlanc(k, new Pion(color, state));
 					}
 				}
 			}
@@ -974,7 +984,7 @@ void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 				getline(tmp, contenu, '_'); // Piece par Piece
 				if (contenu == "NULL") {
 					tmp.ignore(5, ' ');
-					(*listePartie)[i]->setPNoir(k, NULL);
+					(*listePartie)[j]->setPNoir(k, NULL);
 				}
 				else {
 					int color;
@@ -987,22 +997,22 @@ void chargerJeu(Partie***& listePartie, Joueur***& listeJoueur) {
 
 
 					if (contenu == "Tour") {
-						(*listePartie)[i]->setPNoir(k, new Tour(color, state));
+						(*listePartie)[j]->setPNoir(k, new Tour(color, state));
 					}
 					else if (contenu == "Fou") {
-						(*listePartie)[i]->setPNoir(k, new Fou(color, state));
+						(*listePartie)[j]->setPNoir(k, new Fou(color, state));
 					}
 					else if (contenu == "Roi") {
-						(*listePartie)[i]->setPNoir(k, new Roi(color, state));
+						(*listePartie)[j]->setPNoir(k, new Roi(color, state));
 					}
 					else if (contenu == "Reine") {
-						(*listePartie)[i]->setPNoir(k, new Reine(color, state));
+						(*listePartie)[j]->setPNoir(k, new Reine(color, state));
 					}
 					else if (contenu == "Cavalier") {
-						(*listePartie)[i]->setPNoir(k, new Cavalier(color, state));
+						(*listePartie)[j]->setPNoir(k, new Cavalier(color, state));
 					}
 					else if (contenu == "Pion") {
-						(*listePartie)[i]->setPNoir(k, new Pion(color, state));
+						(*listePartie)[j]->setPNoir(k, new Pion(color, state));
 					}
 				}
 			}
@@ -1114,9 +1124,9 @@ void saveParties(Partie***& listePartie) {
 			else
 				fichier << (*listePartie)[i]->getJ2()->getNom() << endl;
 
-			fichier << (*listePartie)[i]->getJ2()->getNom() << endl
-				<< (*listePartie)[i]->getTypePartie() << endl
+			fichier << (*listePartie)[i]->getTypePartie() << endl
 				<< (*listePartie)[i]->getIsWhiteToPlay() << endl;
+
 
 			/* On enregistre les deux tableaux de pièce*/
 
@@ -1126,6 +1136,7 @@ void saveParties(Partie***& listePartie) {
 				else
 					fichier << "NULL_0_0 ";
 			}
+			fichier << endl;
 
 			for (int j = 0; j < 4; j++) {
 				if ((*listePartie)[i]->getPNoir(j) != NULL)
@@ -1133,7 +1144,7 @@ void saveParties(Partie***& listePartie) {
 				else
 					fichier << "NULL_0_0 ";
 			}
-
+			fichier << endl;
 
 			/* On enregistre le plateau */
 

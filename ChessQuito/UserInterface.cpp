@@ -45,21 +45,20 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 	imgBlanc.pion = IMG_Load("res/b_pion.png");
 
 
-	SDL_SetColorKey(imgNoir.tour, SDL_SRCCOLORKEY, SDL_MapRGB(ecran->format, 255, 0, 0));
-	SDL_SetColorKey(imgNoir.roi, SDL_SRCCOLORKEY, SDL_MapRGB(ecran->format, 255, 0, 0));
-	SDL_SetColorKey(imgNoir.fou, SDL_SRCCOLORKEY, SDL_MapRGB(ecran->format, 255, 0, 0));
-	SDL_SetColorKey(imgNoir.reine, SDL_SRCCOLORKEY, SDL_MapRGB(ecran->format, 255, 0, 0));
-	SDL_SetColorKey(imgNoir.cavalier, SDL_SRCCOLORKEY, SDL_MapRGB(ecran->format, 255, 0, 0));
-	SDL_SetColorKey(imgNoir.pion, SDL_SRCCOLORKEY, SDL_MapRGB(ecran->format, 255, 0, 0));
+	SDL_SetColorKey(imgNoir.tour, SDL_SRCCOLORKEY, SDL_MapRGB(imgNoir.tour->format, 255, 0, 0));
+	SDL_SetColorKey(imgNoir.roi, SDL_SRCCOLORKEY, SDL_MapRGB(imgNoir.roi->format, 255, 0, 0));
+	SDL_SetColorKey(imgNoir.fou, SDL_SRCCOLORKEY, SDL_MapRGB(imgNoir.fou->format, 255, 0, 0));
+	SDL_SetColorKey(imgNoir.reine, SDL_SRCCOLORKEY, SDL_MapRGB(imgNoir.reine->format, 255, 0, 0));
+	SDL_SetColorKey(imgNoir.cavalier, SDL_SRCCOLORKEY, SDL_MapRGB(imgNoir.cavalier->format, 255, 0, 0));
+	SDL_SetColorKey(imgNoir.pion, SDL_SRCCOLORKEY, SDL_MapRGB(imgNoir.pion->format, 255, 0, 0));
 
-	SDL_SetColorKey(imgBlanc.tour, SDL_SRCCOLORKEY, SDL_MapRGB(ecran->format, 255, 0, 0));
-	SDL_SetColorKey(imgBlanc.roi, SDL_SRCCOLORKEY, SDL_MapRGB(ecran->format, 255, 0, 0));
-	SDL_SetColorKey(imgBlanc.fou, SDL_SRCCOLORKEY, SDL_MapRGB(ecran->format, 255, 0, 0));
-	SDL_SetColorKey(imgBlanc.reine, SDL_SRCCOLORKEY, SDL_MapRGB(ecran->format, 255, 0, 0));
-	SDL_SetColorKey(imgBlanc.cavalier, SDL_SRCCOLORKEY, SDL_MapRGB(ecran->format, 255, 0, 0));
-	SDL_SetColorKey(imgBlanc.pion, SDL_SRCCOLORKEY, SDL_MapRGB(ecran->format, 255, 0, 0));
-
-
+	SDL_SetColorKey(imgBlanc.tour, SDL_SRCCOLORKEY, SDL_MapRGB(imgBlanc.tour->format, 255, 0, 0));
+	SDL_SetColorKey(imgBlanc.roi, SDL_SRCCOLORKEY, SDL_MapRGB(imgBlanc.roi->format, 255, 0, 0));
+	SDL_SetColorKey(imgBlanc.fou, SDL_SRCCOLORKEY, SDL_MapRGB(imgBlanc.fou->format, 255, 0, 0));
+	SDL_SetColorKey(imgBlanc.reine, SDL_SRCCOLORKEY, SDL_MapRGB(imgBlanc.reine->format, 255, 0, 0));
+	SDL_SetColorKey(imgBlanc.cavalier, SDL_SRCCOLORKEY, SDL_MapRGB(imgBlanc.cavalier->format, 255, 0, 0));
+	SDL_SetColorKey(imgBlanc.pion, SDL_SRCCOLORKEY, SDL_MapRGB(imgBlanc.pion->format, 255, 0, 0));
+	
 
 	resizeImage(imgNoir.tour, CASE_Y, CASE_Y, false);
 	resizeImage(imgNoir.roi, CASE_Y, CASE_Y, false);
@@ -447,30 +446,260 @@ void UserInterface::dNavBar()
 
 void UserInterface::playPartie(Partie*& mPartie) {
 
+
+	if (mPartie->getTypePartie() == -1) { // Temporaire règle obligatoire
+		mPartie->setTypePartie(1);
+	}
+
+
+	if (mPartie->isPartieInit()) {
+		xPartie = 0;
+	}
+	else {
+		if (mPartie->getIsWhiteToPlay()) {
+			xPartie = -2;
+		}
+		else {
+			xPartie = -1;
+		}
+	}
+
+	yPartie = 0;
+
+
+
+	bool continuer = true;
+
+
+	dPartie(mPartie);
+
+	SDL_Event event;
+
+	while (continuer) {
+
+		SDL_WaitEvent(&event);
+		switch (event.type) {
+
+		case SDL_QUIT:
+			return;
+
+		case SDL_KEYDOWN:
+
+			if (event.key.keysym.sym == SDLK_ESCAPE)
+				return;
+
+
+			if (event.key.keysym.sym == SDLK_LEFT  && yPartie > 0) {
+				yPartie--;
+			}
+			else if (event.key.keysym.sym == SDLK_RIGHT && yPartie < TAILLE - 1) {
+				yPartie++;
+			}
+			else if (event.key.keysym.sym == SDLK_UP && xPartie > 0) {
+				xPartie--;
+			}
+			else if (event.key.keysym.sym == SDLK_DOWN && xPartie < TAILLE - 1 && xPartie >= 0) {
+				xPartie++;
+			}
+			dPartie(mPartie);
+			break;
+
+		case SDL_MOUSEBUTTONDOWN:
+
+
+			if (btnSetJoueurPartie != NULL) {
+				if (btnSetJoueurPartie->isClicked(event.button.x, event.button.y)) {
+					cout << "Rentrez le pseudo svp :" << endl;
+
+					string tmp;
+					cin >> tmp;
+					
+
+					for (int i = 0; (*listeJoueur)[i] != NULL; i++) {
+						if (tmp == (*listeJoueur)[i]->getNom())
+							mPartie->addJoueur((*listeJoueur)[i]);
+						cout << (*listeJoueur)[i]->getNom() << endl;
+					}
+					
+
+					if ((*listePartie)[selection]->getJ1() != NULL && (*listePartie)[selection]->getJ2() != NULL) { // On supprime le bouton afin d'arreter la detection
+						delete btnSetJoueurPartie;
+						btnSetJoueurPartie = NULL;
+					}
+					dPartie(mPartie);
+				}
+			}
+			else if (btnSortir->isClicked(event.button.x, event.button.y)) {
+				continuer = 0;
+			}
+
+
+			break;
+		}
+	}
 }
 
 
 void UserInterface::dPartie(Partie*& mPartie) {
 
+
 	SDL_FillRect(ecran, &plateau, SDL_MapRGB(ecran->format, 207, 216, 220)); // On met l'arriere plan
+
+	SDL_Surface* tmp;
+
+	tmp = TTF_RenderText_Blended(police, ("Accueil  >  Gestionnaire des Parties > Jouer partie du " + mPartie->getDate()).c_str(), btnFontColor);
+
+	resizeImage(tmp, WIDTH - 100, WIDTH - 100, true);
+
+	SDL_Rect tmpRect;
+	tmpRect.x = (WIDTH - tmp->w) / 2;
+	tmpRect.y = 20;
+
+	SDL_BlitSurface(tmp, NULL, ecran, &tmpRect);
+	SDL_FreeSurface(tmp);
+
+
+
 
 	if ((*listePartie)[selection]->getJ1() == NULL || (*listePartie)[selection]->getJ2() == NULL) {
 
 		if(btnSetJoueurPartie == NULL)
-			btnSetJoueurPartie = new Bouton(ecran, police, "Ajouter un joueur à la partie", 100, 10, 300, 50, btnColor, btnFontColor);
+			btnSetJoueurPartie = new Bouton(ecran, police, "Ajouter un joueur à la partie (En maintenance ==> console)", 100, 10, 300, 50, btnColor, btnFontColor);
 
 		btnSetJoueurPartie->afficherBtn();
 
 	}
 	else {
 
-		/* On colle déjà le plateau */
+		/* On affiche les pions des joueurs */
+
+
+		SDL_Rect rectBlanc;
+		SDL_Rect rectNoir;
+
+		rectBlanc.h = CASE_Y + 8;
+		rectBlanc.w = 4 * CASE_X + 8;
+		rectBlanc.x = 96;
+		rectBlanc.y = 96;
+
+		rectNoir.h = CASE_Y + 8;
+		rectNoir.w = 4 * CASE_X + 8;
+		rectNoir.x = 96;
+		rectNoir.y = 300 + CASE_Y * TAILLE + 20;
+
+
+		SDL_FillRect(ecran, &rectBlanc, SDL_MapRGB(ecran->format, 255, 255, 255)); // On met l'arriere plan
+		SDL_FillRect(ecran, &rectNoir, SDL_MapRGB(ecran->format, 0, 0, 0)); // On met l'arriere plan
+
+
+		rectBlanc.x += 4;
+		rectNoir.x += 4;
+		rectBlanc.y += 4;
+		rectNoir.y += 4;
+		rectBlanc.h -= 8;
+		rectNoir.h -= 8;
+		rectBlanc.w = CASE_X;
+		rectNoir.w = CASE_X;
+
+		for (int i = 0; i < 4; i++) {
+
+			Uint32 color;
+
+			
+			if (xPartie == -2 && i == yPartie) {
+				color = SDL_MapRGB(ecran->format, 255, 0, 0);
+			}
+			else if (xSelectPartie == -2 && i == ySelectPartie) {
+				color = SDL_MapRGB(ecran->format, 0, 255, 0);
+			}
+			else if (i % 2 == 0) {
+				color = SDL_MapRGB(ecran->format, 246, 228, 151);
+			}
+			else {
+				color = SDL_MapRGB(ecran->format, 189, 141, 70);
+			}
+			SDL_FillRect(ecran, &rectBlanc, color);
+
+
+			if (xPartie == -1 && i == yPartie) {
+				color = SDL_MapRGB(ecran->format, 255, 0, 0);
+			}
+			else if (xSelectPartie == -1 && i == ySelectPartie) {
+				color = SDL_MapRGB(ecran->format, 0, 255, 0);
+			}
+			else if (i % 2 == 0) {
+				color = SDL_MapRGB(ecran->format, 246, 228, 151);
+			}
+			else {
+				color = SDL_MapRGB(ecran->format, 189, 141, 70);
+			}
+			SDL_FillRect(ecran, &rectNoir, color);
+
+
+			
+			if (mPartie->getPBlanc(i) == NULL) {
+
+			}
+			else if (mPartie->getPBlanc(i)->getName() == "Tour") {
+				SDL_BlitSurface(imgBlanc.tour, NULL, ecran, &rectBlanc);
+			}
+			else if (mPartie->getPBlanc(i)->getName() == "Roi") {
+				SDL_BlitSurface(imgBlanc.roi, NULL, ecran, &rectBlanc);
+			}
+			else if (mPartie->getPBlanc(i)->getName() == "Fou") {
+				SDL_BlitSurface(imgBlanc.fou, NULL, ecran, &rectBlanc);
+			}
+			else if (mPartie->getPBlanc(i)->getName() == "Reine") {
+				SDL_BlitSurface(imgBlanc.reine, NULL, ecran, &rectBlanc);
+			}
+			else if (mPartie->getPBlanc(i)->getName() == "Cavalier") {
+				SDL_BlitSurface(imgBlanc.cavalier, NULL, ecran, &rectBlanc);
+			}
+			else if (mPartie->getPBlanc(i)->getName() == "Pion") {
+				SDL_BlitSurface(imgBlanc.pion, NULL, ecran, &rectBlanc);
+			}
+			
+
+			if (mPartie->getPNoir(i) == NULL) {
+
+			}
+			else if (mPartie->getPNoir(i)->getName() == "Tour") {
+				SDL_BlitSurface(imgNoir.tour, NULL, ecran, &rectNoir);
+			}
+			else if (mPartie->getPNoir(i)->getName() == "Roi") {
+				SDL_BlitSurface(imgNoir.roi, NULL, ecran, &rectNoir);
+			}
+			else if (mPartie->getPNoir(i)->getName() == "Fou") {
+				SDL_BlitSurface(imgNoir.fou, NULL, ecran, &rectNoir);
+			}
+			else if (mPartie->getPNoir(i)->getName() == "Reine") {
+				SDL_BlitSurface(imgNoir.reine, NULL, ecran, &rectNoir);
+			}
+			else if (mPartie->getPNoir(i)->getName() == "Cavalier") {
+				SDL_BlitSurface(imgNoir.cavalier, NULL, ecran, &rectNoir);
+			}
+			else if (mPartie->getPNoir(i)->getName() == "Pion") {
+				SDL_BlitSurface(imgNoir.pion, NULL, ecran, &rectNoir);
+			}
+
+			
+			rectBlanc.w = CASE_X; // Car changé par le BlitSurface...
+			rectNoir.w = CASE_X;
+
+
+			rectBlanc.x += CASE_X;
+			rectNoir.x += CASE_X;
+		}
+
+
+
+		/* On colle le plateau */
 
 		SDL_Rect contour;
 		contour.h = CASE_Y * TAILLE + 8;
 		contour.w = CASE_X * TAILLE + 8;
 		contour.x = 96;
-		contour.y = 96;
+		contour.y = 296;
 
 		SDL_FillRect(ecran, &contour, SDL_MapRGB(ecran->format, 144, 164, 174)); // On met l'arriere plan
 
@@ -478,7 +707,7 @@ void UserInterface::dPartie(Partie*& mPartie) {
 		caseRect.h = CASE_Y;
 		caseRect.w = CASE_X;
 		caseRect.x = 100;
-		caseRect.y = 100;
+		caseRect.y = 300;
 
 
 		for (int i = 0; i < TAILLE; i++) {
@@ -487,10 +716,20 @@ void UserInterface::dPartie(Partie*& mPartie) {
 			for (int j = 0; j < TAILLE; j++) {
 				Uint32 color;
 
-				if ((j + i) % 2 == 0)
+
+				if (i == xPartie && j == yPartie) {
+					color = SDL_MapRGB(ecran->format, 255, 0, 0);
+				}
+				else if (i == xSelectPartie && j == ySelectPartie) {
+					color = SDL_MapRGB(ecran->format, 0, 255, 0);
+				}
+				else if ((j + i) % 2 == 0) {
 					color = SDL_MapRGB(ecran->format, 246, 228, 151);
-				else
+				}
+				else {
 					color = SDL_MapRGB(ecran->format, 189, 141, 70);
+				}
+
 
 				SDL_FillRect(ecran, &caseRect, color); // On met la case
 
@@ -498,8 +737,10 @@ void UserInterface::dPartie(Partie*& mPartie) {
 				posPiece.y = caseRect.y;
 
 
-				
-				if ((*mPartie)(i, j)->getName() == "Tour") {
+				if ((*mPartie)(i, j) == NULL) {
+
+				}
+				else if ((*mPartie)(i, j)->getName() == "Tour") {
 
 					posPiece.x = caseRect.x + CASE_X / 2 - imgBlanc.tour->w / 2;
 
@@ -561,6 +802,7 @@ void UserInterface::dPartie(Partie*& mPartie) {
 			caseRect.y += CASE_Y;
 		}
 	}
+	SDL_Flip(ecran);
 }
 
 
@@ -644,6 +886,7 @@ int UserInterface::checkEventMenu(int x, int y)
 		}
 
 		if (btnPlayPartie->isClicked(x, y) && selection != -1) {
+			playPartie((*listePartie)[selection]);
 			return 7;
 		}
 

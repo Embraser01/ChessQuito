@@ -40,7 +40,7 @@ private:
 
 	Plateau p; // Un échiquier par partie
 
-	Piece* pBlanc[4]; // Contient les pièces pour l'initialisation
+	Piece* pBlanc[4]; // Contient les pièces 
 	Piece* pNoir[4];
 
 	int typePartie; // Contient le numéro de la règle utilisé
@@ -74,8 +74,8 @@ public:
 	void setPBlanc(int, Piece*);
 
 
-	void setTypePartie(int); // Met le type de partie ( num de la regle - possible une seule fois)
-	void setIsWhiteTiPlay(bool); // Permet de choisir le prochain joueur
+	void setTypePartie(int, bool = false); // Met le type de partie ( num de la regle - possible une seule fois)
+	void setIsWhiteToPlay(bool); // Permet de choisir le prochain joueur
 
 	void affichePlateau(ostream& flux) const; // Permet cout << mPartie;
 

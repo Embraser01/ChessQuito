@@ -29,10 +29,10 @@ void deletePartie(Partie***&, Partie* mPartie);
 
 /* Constantes */
 
-const int TX = 1000; // Largeur de la fenetre
-const int TY = 700; // Hauteur de la fenetre
+const int TX = 1200; // Largeur de la fenetre
+const int TY = 900; // Hauteur de la fenetre
 
-const int WIDTH = 700; // Largeur de la zone de "JEU"
+const int WIDTH = 900; // Largeur de la zone de "JEU"
 
 const int CASE_X = 100; // Largeur d'une case
 const int CASE_Y = 100; // Hauteur d'une case
@@ -98,6 +98,13 @@ private:
 	string pseudo; // Utilisé pour ajouter un joueur ou modifier un joueur
 
 
+	int xPartie; // Utilisé pendant une partie 
+	int yPartie; // afin de bouger un pion
+
+	int xSelectPartie; // Utilisé pour savoir
+	int ySelectPartie; // le pion qui se joue
+
+	
 
 	ImgPions imgNoir; // Liste des images des pièces Noirs
 	ImgPions imgBlanc; // Liste des images des pièces Blanches

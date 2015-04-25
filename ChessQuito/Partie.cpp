@@ -24,6 +24,8 @@ Partie::Partie()
 	nCoup = 0;
 	nDernierePrise = -1;
 
+	isWhiteToPlay = true;
+
 	for (int i = 0; i < 4; i++) {
 		pNoir[i] = NULL;
 		pBlanc[i] = NULL;
@@ -113,19 +115,31 @@ Piece * Partie::getPBlanc(int i) const
 
 void Partie::setPNoir(int i, Piece * piece)
 {
+	if (pNoir[i] != NULL)
+		delete pNoir[i];
+
 	pNoir[i] = piece;
 }
 
 void Partie::setPBlanc(int i, Piece * piece)
 {
+	if (pBlanc[i] != NULL)
+		delete pBlanc[i];
+
 	pBlanc[i] = piece;
 }
 
 
 
-void Partie::setTypePartie(int type){
+void Partie::setTypePartie(int type, bool force){
 
-	if (typePartie == -1 && type < 4 && type > 0) {
+	if (typePartie == -1 && ((type < 4 && type > 0) || type == -1)) {
+
+		if (force) {
+			typePartie = type;
+			return;
+		}
+
 		typePartie = type;
 
 		switch (typePartie) {
@@ -185,7 +199,7 @@ void Partie::setTypePartie(int type){
 	}
 }
 
-void Partie::setIsWhiteTiPlay(bool state)
+void Partie::setIsWhiteToPlay(bool state)
 {
 	this->isWhiteToPlay = state;
 }
@@ -276,7 +290,7 @@ bool Partie::placePiece(Piece* piece, char pos2[3]){
 
 			if (p[x2][y2]->getColor() != piece->getColor()) {
 
-				delete p[x2][y2];
+				p[x2][y2]->setState(2);
 
 				p[x2][y2] = p[x1][y1];
 				p[x1][y1] = NULL;
@@ -307,7 +321,7 @@ bool Partie::placePiece(Piece* piece, char pos2[3]){
 			if (p[x2][y2] != NULL && x1 != x2) {
 				if (p[x2][y2]->getColor() != piece->getColor()) {
 
-					delete p[x2][y2];
+					p[x2][y2]->setState(2);
 
 					p[x2][y2] = p[x1][y1];
 					p[x1][y1] = NULL;
@@ -384,7 +398,7 @@ bool Partie::placePiece(Piece* piece, char pos2[3]){
 
 		else { // Si de couleur differente
 
-			delete p[x2][y2];
+			p[x2][y2]->setState(2);
 
 			p[x2][y2] = p[x1][y1];
 			p[x1][y1] = NULL;
@@ -422,15 +436,6 @@ bool Partie::initPiece(Piece* piece, char pos[3])
 	if (piece->getState() == 0 && p[x][y] == NULL) {
 		p[x][y] = piece;
 		piece->setState(1);
-
-		// On supprime la piece du tableau
-
-		for (int i = 0; i < 4; i++) {
-			if (piece == pNoir[i])
-				pNoir[i] = NULL;
-			if (piece == pBlanc[i])
-				pBlanc[i] = NULL;
-		}
 
 		return true;
 	}
@@ -486,9 +491,11 @@ bool Partie::isPartieInit(){
 
 	for(int i = 0; i < 4; i++){
 		if (pNoir[i] != NULL)
-			return false;
+			if(pNoir[i]->getState() == 0)
+				return false;
 		if (pBlanc[i] != NULL)
-			return false;
+			if (pBlanc[i]->getState() == 0)
+				return false;
 	}
 	return true;
 }
@@ -577,5 +584,12 @@ Partie::~Partie(void)
 		for(int j = 0; j < TAILLE; j++)
 			if( p[i][j] != NULL){
 				delete p[i][j];
-			}	
+			}
+
+	for (int i = 0; i < 4; i++) {
+		if (pNoir[i] != NULL)
+			delete pNoir[i];
+		if (pBlanc[i] != NULL)
+			delete pBlanc[i];
+	}
 }
