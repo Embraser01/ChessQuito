@@ -550,20 +550,16 @@ bool Partie::isPartieEnd(){
 			return true;
 
 
-		/* On compte le nbre de piece restante sur le plateau */ 
+		/* On compte le nbre de piece non prise */ 
 
 		int nbPieceB = 0;
 		int nbPieceN = 0;
 
-		for(int i = 0; i < TAILLE; i++){
-			for(int j = 0; j < TAILLE; j++){
-				if( p[i][j] != NULL){
-					if(p[i][j]->getColor() == 0)
-						nbPieceB++;
-					else
-						nbPieceN++;
-				}
-			}
+		for (int i = 0; i < 4; i++) {
+			if (pBlanc[i]->getState() != 2)
+				nbPieceB++;
+			if (pNoir[i]->getState() != 2)
+				nbPieceN++;
 		}
 
 		if(nbPieceB == 0 || nbPieceN == 0)

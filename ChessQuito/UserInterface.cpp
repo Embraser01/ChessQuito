@@ -46,7 +46,7 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 
 	croix = IMG_Load("res/croix.png");
 
-	SDL_SetColorKey(croix, SDL_SRCCOLORKEY, SDL_MapRGB(croix->format, 0, 0, 0));
+	SDL_SetColorKey(croix, SDL_SRCCOLORKEY, SDL_MapRGB(croix->format, 255, 255, 255));
 
 	SDL_SetColorKey(imgNoir.tour, SDL_SRCCOLORKEY, SDL_MapRGB(imgNoir.tour->format, 255, 0, 0));
 	SDL_SetColorKey(imgNoir.roi, SDL_SRCCOLORKEY, SDL_MapRGB(imgNoir.roi->format, 255, 0, 0));
@@ -511,39 +511,65 @@ void UserInterface::playPartie(Partie*& mPartie) {
 				if (!mPartie->isPartieInit()) {
 
 					if (xSelectPartie == -5 || ySelectPartie == -5) {
+						if ((xPartie == -2 && mPartie->getPBlanc(yPartie)->getState() == 0) || (xPartie == -1 && mPartie->getPNoir(yPartie)->getState() == 0)) {
+							xSelectPartie = xPartie;
+							ySelectPartie = yPartie;
+							xPartie = 0;
+							yPartie = 0;
+						}
+					}
+
+
+					else if (xSelectPartie == -2) {
+						if (mPartie->placePiece(mPartie->getPBlanc(ySelectPartie), xPartie, yPartie)) {
+							xSelectPartie = -5;
+							ySelectPartie = -5;
+							if (mPartie->isPartieInit())
+								xPartie = 0;
+							else
+								xPartie = -1;
+							yPartie = 0;
+						}
+					}
+					else {
+						if (mPartie->placePiece(mPartie->getPNoir(ySelectPartie), xPartie, yPartie)) {
+							xSelectPartie = -5;
+							ySelectPartie = -5;
+							if (mPartie->isPartieInit())
+								xPartie = 0;
+							else
+								xPartie = -2;
+							yPartie = 0;
+						}
+					}
+				}
+				else {
+					if ((xSelectPartie == -5 || ySelectPartie == -5) && (*mPartie)(xPartie, yPartie)->getColor() == !mPartie->getIsWhiteToPlay()) {
 						xSelectPartie = xPartie;
 						ySelectPartie = yPartie;
 						xPartie = 0;
 						yPartie = 0;
 					}
-					else {
-						if (xSelectPartie == -2) {
-							if (mPartie->placePiece(mPartie->getPBlanc(ySelectPartie), xPartie, yPartie)) {
-								xSelectPartie = -5;
-								ySelectPartie = -5;
-								if (mPartie->isPartieInit())
-									xPartie = 0;
-								else
-									xPartie = -1;
-								yPartie = 0;
-							}
-						}
-						else {
-							if (mPartie->placePiece(mPartie->getPNoir(ySelectPartie), xPartie, yPartie)) {
-								xSelectPartie = -5;
-								ySelectPartie = -5;
-								if (mPartie->isPartieInit())
-									xPartie = 0;
-								else
-									xPartie = -2;
-								yPartie = 0;
-							}
-						}
+					else if(xSelectPartie == -5 || ySelectPartie == -5) {} // Empeche de tester le if d'après
+					else if (mPartie->placePiece((*mPartie)(xSelectPartie,ySelectPartie), xPartie, yPartie)) {
+						xSelectPartie = -5;
+						ySelectPartie = -5;
+						if (mPartie->isPartieInit())
+							xPartie = 0;
+						else
+							xPartie = -2;
+						yPartie = 0;
 					}
 				}
-
 			}
 			dPartie(mPartie);
+			if (mPartie->isPartieEnd()) {
+				cout << "Partie terminé ! " << endl;
+				cout << "Le gagnant est le joueur :" << mPartie->getGagnant() << endl;
+
+				deletePartie(listePartie, mPartie);
+				continuer = false;
+			}
 			break;
 
 		case SDL_MOUSEBUTTONDOWN:
@@ -677,7 +703,6 @@ void UserInterface::dPartie(Partie*& mPartie) {
 			}
 			SDL_FillRect(ecran, &rectNoir, color);
 
-
 			
 			if (mPartie->getPBlanc(i) == NULL) {
 
@@ -757,7 +782,7 @@ void UserInterface::dPartie(Partie*& mPartie) {
 
 				SDL_BlitSurface(imgNoir.fou, NULL, ecran, &rectNoir);
 
-				SDL_SetAlpha(imgBlanc.fou, SDL_SRCALPHA, 255);
+				SDL_SetAlpha(imgNoir.fou, SDL_SRCALPHA, 255);
 			}
 			else if (mPartie->getPNoir(i)->getName() == "Reine") {
 				if (mPartie->getPNoir(i)->getState() == 1)
@@ -790,6 +815,9 @@ void UserInterface::dPartie(Partie*& mPartie) {
 
 
 			if (mPartie->getPBlanc(i)->getState() == 2) {
+				SDL_BlitSurface(croix, NULL, ecran, &rectBlanc);
+			}
+			if (mPartie->getPNoir(i)->getState() == 2) {
 				SDL_BlitSurface(croix, NULL, ecran, &rectNoir);
 			}
 
@@ -801,7 +829,18 @@ void UserInterface::dPartie(Partie*& mPartie) {
 
 		/* On colle le plateau */
 
+
 		SDL_Rect contour;
+		contour.h = CASE_Y * TAILLE + 24;
+		contour.w = CASE_X * TAILLE + 24;
+		contour.x = 88;
+		contour.y = 288;
+
+		if(mPartie->getIsWhiteToPlay())
+			SDL_FillRect(ecran, &contour, SDL_MapRGB(ecran->format, 255, 255, 255)); // On met l'arriere plan
+		else
+			SDL_FillRect(ecran, &contour, SDL_MapRGB(ecran->format, 0, 0, 0)); // On met l'arriere plan
+
 		contour.h = CASE_Y * TAILLE + 8;
 		contour.w = CASE_X * TAILLE + 8;
 		contour.x = 96;
@@ -918,16 +957,7 @@ int UserInterface::checkEventMenu(int x, int y)
 		return -1;
 
 
-	if (mode == 0) {
-
-		if (btnSortir->isClicked(x, y)) {
-			mode = 1;
-			dNavBar();
-			dPlateau();
-			return 3;
-		}
-	}
-	else if (mode == 1) {
+	if (mode == 1) {
 
 		if (btnSortir->isClicked(x, y))
 			return 0;
@@ -993,6 +1023,8 @@ int UserInterface::checkEventMenu(int x, int y)
 
 		if (btnPlayPartie->isClicked(x, y) && selection != -1) {
 			playPartie((*listePartie)[selection]);
+			dPlateau();
+			dNavBar();
 			return 7;
 		}
 
