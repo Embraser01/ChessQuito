@@ -108,6 +108,8 @@ private:
 
 	ImgPions imgNoir; // Liste des images des pièces Noirs
 	ImgPions imgBlanc; // Liste des images des pièces Blanches
+	SDL_Surface* croix;
+
 
 	int checkEventMenu(int x, int y); // Permet de naviguer dans les différents menus, si mode == 0 alors on verifie que la barre laterale
 

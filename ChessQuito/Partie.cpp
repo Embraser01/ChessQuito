@@ -283,6 +283,12 @@ bool Partie::placePiece(Piece* piece, char pos2[3]){
 				p[x2][y2] = p[x1][y1];
 				p[x1][y1] = NULL;
 				nCoup++;
+
+				if (isWhiteToPlay)
+					isWhiteToPlay = false;
+				else
+					isWhiteToPlay = true;
+
 				return true;
 			}
 
@@ -296,6 +302,12 @@ bool Partie::placePiece(Piece* piece, char pos2[3]){
 				p[x1][y1] = NULL;
 				nCoup++;
 				nDernierePrise = nCoup;
+
+				if (isWhiteToPlay)
+					isWhiteToPlay = false;
+				else
+					isWhiteToPlay = true;
+
 				return true;
 			}	
 		}
@@ -313,6 +325,12 @@ bool Partie::placePiece(Piece* piece, char pos2[3]){
 				p[x2][y2] = p[x1][y1];
 				p[x1][y1] = NULL;
 				nCoup++;
+
+				if (isWhiteToPlay)
+					isWhiteToPlay = false;
+				else
+					isWhiteToPlay = true;
+
 				return true;
 			}
 
@@ -327,6 +345,12 @@ bool Partie::placePiece(Piece* piece, char pos2[3]){
 					p[x1][y1] = NULL;
 					nCoup++;
 					nDernierePrise = nCoup;
+
+					if (isWhiteToPlay)
+						isWhiteToPlay = false;
+					else
+						isWhiteToPlay = true;
+
 					return true;
 				}
 			}
@@ -389,6 +413,12 @@ bool Partie::placePiece(Piece* piece, char pos2[3]){
 			p[x2][y2] = p[x1][y1];
 			p[x1][y1] = NULL;
 			nCoup++;
+
+			if (isWhiteToPlay)
+				isWhiteToPlay = false;
+			else
+				isWhiteToPlay = true;
+
 			return true;
 		}
 
@@ -404,6 +434,12 @@ bool Partie::placePiece(Piece* piece, char pos2[3]){
 			p[x1][y1] = NULL;
 			nCoup++;
 			nDernierePrise = nCoup;
+
+			if (isWhiteToPlay)
+				isWhiteToPlay = false;
+			else
+				isWhiteToPlay = true;
+
 			return true;
 		}
 	}
@@ -437,6 +473,10 @@ bool Partie::initPiece(Piece* piece, char pos[3])
 		p[x][y] = piece;
 		piece->setState(1);
 
+		if (isWhiteToPlay)
+			isWhiteToPlay = false;
+		else
+			isWhiteToPlay = true;
 		return true;
 	}
 
@@ -579,13 +619,7 @@ Partie::~Partie(void)
 	if(j2 != NULL)
 		j2->setPartie(this);
 
-
-	for(int i = 0; i < TAILLE; i++)
-		for(int j = 0; j < TAILLE; j++)
-			if( p[i][j] != NULL){
-				delete p[i][j];
-			}
-
+	
 	for (int i = 0; i < 4; i++) {
 		if (pNoir[i] != NULL)
 			delete pNoir[i];

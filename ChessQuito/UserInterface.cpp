@@ -44,6 +44,9 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 	imgBlanc.cavalier = IMG_Load("res/b_cavalier.png");
 	imgBlanc.pion = IMG_Load("res/b_pion.png");
 
+	croix = IMG_Load("res/croix.png");
+
+	SDL_SetColorKey(croix, SDL_SRCCOLORKEY, SDL_MapRGB(croix->format, 0, 0, 0));
 
 	SDL_SetColorKey(imgNoir.tour, SDL_SRCCOLORKEY, SDL_MapRGB(imgNoir.tour->format, 255, 0, 0));
 	SDL_SetColorKey(imgNoir.roi, SDL_SRCCOLORKEY, SDL_MapRGB(imgNoir.roi->format, 255, 0, 0));
@@ -447,7 +450,7 @@ void UserInterface::dNavBar()
 void UserInterface::playPartie(Partie*& mPartie) {
 
 
-	if (mPartie->getTypePartie() == -1) { // Temporaire règle obligatoire
+	if (mPartie->getTypePartie() == -1) { // Temporaire, règle 1 obligatoire
 		mPartie->setTypePartie(1);
 	}
 
@@ -466,6 +469,8 @@ void UserInterface::playPartie(Partie*& mPartie) {
 
 	yPartie = 0;
 
+	xSelectPartie = -5; // Valeurs par defaut
+	ySelectPartie = -5;
 
 
 	bool continuer = true;
@@ -500,6 +505,43 @@ void UserInterface::playPartie(Partie*& mPartie) {
 			}
 			else if (event.key.keysym.sym == SDLK_DOWN && xPartie < TAILLE - 1 && xPartie >= 0) {
 				xPartie++;
+			}
+			else if (event.key.keysym.sym == SDLK_RETURN) {
+
+				if (!mPartie->isPartieInit()) {
+
+					if (xSelectPartie == -5 || ySelectPartie == -5) {
+						xSelectPartie = xPartie;
+						ySelectPartie = yPartie;
+						xPartie = 0;
+						yPartie = 0;
+					}
+					else {
+						if (xSelectPartie == -2) {
+							if (mPartie->placePiece(mPartie->getPBlanc(ySelectPartie), xPartie, yPartie)) {
+								xSelectPartie = -5;
+								ySelectPartie = -5;
+								if (mPartie->isPartieInit())
+									xPartie = 0;
+								else
+									xPartie = -1;
+								yPartie = 0;
+							}
+						}
+						else {
+							if (mPartie->placePiece(mPartie->getPNoir(ySelectPartie), xPartie, yPartie)) {
+								xSelectPartie = -5;
+								ySelectPartie = -5;
+								if (mPartie->isPartieInit())
+									xPartie = 0;
+								else
+									xPartie = -2;
+								yPartie = 0;
+							}
+						}
+					}
+				}
+
 			}
 			dPartie(mPartie);
 			break;
@@ -641,22 +683,52 @@ void UserInterface::dPartie(Partie*& mPartie) {
 
 			}
 			else if (mPartie->getPBlanc(i)->getName() == "Tour") {
+				if(mPartie->getPBlanc(i)->getState() == 1)
+					SDL_SetAlpha(imgBlanc.tour, SDL_SRCALPHA, 128);
+
 				SDL_BlitSurface(imgBlanc.tour, NULL, ecran, &rectBlanc);
+
+				SDL_SetAlpha(imgBlanc.tour, SDL_SRCALPHA, 255);
 			}
 			else if (mPartie->getPBlanc(i)->getName() == "Roi") {
+				if (mPartie->getPBlanc(i)->getState() == 1)
+					SDL_SetAlpha(imgBlanc.roi, SDL_SRCALPHA, 128);
+
 				SDL_BlitSurface(imgBlanc.roi, NULL, ecran, &rectBlanc);
+
+				SDL_SetAlpha(imgBlanc.roi, SDL_SRCALPHA, 255);
 			}
 			else if (mPartie->getPBlanc(i)->getName() == "Fou") {
+				if (mPartie->getPBlanc(i)->getState() == 1)
+					SDL_SetAlpha(imgBlanc.fou, SDL_SRCALPHA, 128);
+
 				SDL_BlitSurface(imgBlanc.fou, NULL, ecran, &rectBlanc);
+
+				SDL_SetAlpha(imgBlanc.fou, SDL_SRCALPHA, 255);
 			}
 			else if (mPartie->getPBlanc(i)->getName() == "Reine") {
+				if (mPartie->getPBlanc(i)->getState() == 1)
+					SDL_SetAlpha(imgBlanc.reine, SDL_SRCALPHA, 128);
+
 				SDL_BlitSurface(imgBlanc.reine, NULL, ecran, &rectBlanc);
+
+				SDL_SetAlpha(imgBlanc.reine, SDL_SRCALPHA, 255);
 			}
 			else if (mPartie->getPBlanc(i)->getName() == "Cavalier") {
+				if (mPartie->getPBlanc(i)->getState() == 1)
+					SDL_SetAlpha(imgBlanc.cavalier, SDL_SRCALPHA, 128);
+
 				SDL_BlitSurface(imgBlanc.cavalier, NULL, ecran, &rectBlanc);
+
+				SDL_SetAlpha(imgBlanc.cavalier, SDL_SRCALPHA, 255);
 			}
 			else if (mPartie->getPBlanc(i)->getName() == "Pion") {
+				if (mPartie->getPBlanc(i)->getState() == 1)
+					SDL_SetAlpha(imgBlanc.pion, SDL_SRCALPHA, 128);
+
 				SDL_BlitSurface(imgBlanc.pion, NULL, ecran, &rectBlanc);
+
+				SDL_SetAlpha(imgBlanc.pion, SDL_SRCALPHA, 255);
 			}
 			
 
@@ -664,28 +736,62 @@ void UserInterface::dPartie(Partie*& mPartie) {
 
 			}
 			else if (mPartie->getPNoir(i)->getName() == "Tour") {
+				if (mPartie->getPNoir(i)->getState() == 1)
+					SDL_SetAlpha(imgNoir.tour, SDL_SRCALPHA, 128);
+
 				SDL_BlitSurface(imgNoir.tour, NULL, ecran, &rectNoir);
+
+				SDL_SetAlpha(imgNoir.tour, SDL_SRCALPHA, 255);
 			}
 			else if (mPartie->getPNoir(i)->getName() == "Roi") {
+				if (mPartie->getPNoir(i)->getState() == 1)
+					SDL_SetAlpha(imgNoir.roi, SDL_SRCALPHA, 128);
+
 				SDL_BlitSurface(imgNoir.roi, NULL, ecran, &rectNoir);
+
+				SDL_SetAlpha(imgBlanc.roi, SDL_SRCALPHA, 255);
 			}
 			else if (mPartie->getPNoir(i)->getName() == "Fou") {
+				if (mPartie->getPNoir(i)->getState() == 1)
+					SDL_SetAlpha(imgNoir.fou, SDL_SRCALPHA, 128);
+
 				SDL_BlitSurface(imgNoir.fou, NULL, ecran, &rectNoir);
+
+				SDL_SetAlpha(imgBlanc.fou, SDL_SRCALPHA, 255);
 			}
 			else if (mPartie->getPNoir(i)->getName() == "Reine") {
+				if (mPartie->getPNoir(i)->getState() == 1)
+					SDL_SetAlpha(imgNoir.reine, SDL_SRCALPHA, 128);
+
 				SDL_BlitSurface(imgNoir.reine, NULL, ecran, &rectNoir);
+
+				SDL_SetAlpha(imgNoir.reine, SDL_SRCALPHA, 255);
 			}
 			else if (mPartie->getPNoir(i)->getName() == "Cavalier") {
+				if (mPartie->getPNoir(i)->getState() == 1)
+					SDL_SetAlpha(imgNoir.cavalier, SDL_SRCALPHA, 128);
+
 				SDL_BlitSurface(imgNoir.cavalier, NULL, ecran, &rectNoir);
+
+				SDL_SetAlpha(imgNoir.cavalier, SDL_SRCALPHA, 255);
 			}
 			else if (mPartie->getPNoir(i)->getName() == "Pion") {
+				if (mPartie->getPNoir(i)->getState() == 1)
+					SDL_SetAlpha(imgNoir.pion, SDL_SRCALPHA, 128);
+
 				SDL_BlitSurface(imgNoir.pion, NULL, ecran, &rectNoir);
+
+				SDL_SetAlpha(imgNoir.pion, SDL_SRCALPHA, 255);
 			}
 
 			
 			rectBlanc.w = CASE_X; // Car changé par le BlitSurface...
 			rectNoir.w = CASE_X;
 
+
+			if (mPartie->getPBlanc(i)->getState() == 2) {
+				SDL_BlitSurface(croix, NULL, ecran, &rectNoir);
+			}
 
 			rectBlanc.x += CASE_X;
 			rectNoir.x += CASE_X;
