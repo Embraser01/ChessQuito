@@ -1,98 +1,98 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
   <Class Name="Bouton" Collapsed="true">
-    <Position X="17.25" Y="0.5" Width="1.5" />
+    <Position X="15.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAACAAAAAAgAAAAQAAACAAAAAAAIEAAAAAABAIA=</HashCode>
       <FileName>Bouton.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Cavalier" Collapsed="true">
-    <Position X="5.75" Y="3.75" Width="1.5" />
+  <Class Name="Cavalier">
+    <Position X="4.25" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAQAAAAAAIAAAAAAAAAAAAAAAAAEAAABAA=</HashCode>
       <FileName>Cavalier.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="EditBox" Collapsed="true">
-    <Position X="19" Y="0.5" Width="1.5" />
+    <Position X="17.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAAAAAACAAAgAAgggAAACACCAAAAEAAAAAAAEAEAAQA=</HashCode>
       <FileName>EditBox.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fou" Collapsed="true">
-    <Position X="12.5" Y="3.75" Width="1.5" />
+  <Class Name="Fou">
+    <Position X="11" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAIAAAAAAAAAAAMAAAAAA=</HashCode>
       <FileName>Fou.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Joueur" Collapsed="true">
-    <Position X="20.75" Y="0.5" Width="1.5" />
+    <Position X="19.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAIAAAAEAAAAAAAAAAIABAAAAAAgAAYAAkAAAAAAA=</HashCode>
       <FileName>Joueur.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Partie" Collapsed="true">
-    <Position X="17.25" Y="1.5" Width="1.5" />
+    <Position X="15.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>gAAgCQCAEqAIAABgEIAACAgAAEqAAASABGAgAQIAJAA=</HashCode>
       <FileName>Partie.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Piece" Collapsed="true">
-    <Position X="0.5" Y="2.5" Width="1.5" />
+  <Class Name="Piece">
+    <Position X="7.25" Y="0.5" Width="2" />
     <TypeIdentifier>
       <HashCode>QAAAAAAAAAAACAAAABIABAQAAAAAACCEAAAEsAAAAAQ=</HashCode>
       <FileName>Piece.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Pion" Collapsed="true">
-    <Position X="3.5" Y="3.75" Width="1.5" />
+  <Class Name="Pion">
+    <Position X="2" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAIAAKAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
       <FileName>Pion.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Reine" Collapsed="true">
-    <Position X="8" Y="3.75" Width="1.5" />
+  <Class Name="Reine">
+    <Position X="6.5" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAgAAAAAIAAAAAAAAAAAAAAAAEEAAAAAA=</HashCode>
       <FileName>Reine.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Roi" Collapsed="true">
-    <Position X="10.25" Y="3.75" Width="1.5" />
+  <Class Name="Roi">
+    <Position X="8.75" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAgAAAAAAAIAAAAAAAAAAgAAAAAAEAAAAAA=</HashCode>
       <FileName>Roi.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Tour" Collapsed="true">
-    <Position X="14.75" Y="3.75" Width="1.5" />
+  <Class Name="Tour">
+    <Position X="13.25" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAgAAAAAAAAAAAAAAIAAAAAAAAIAAAAAAAAEAAAAAA=</HashCode>
       <FileName>Tour.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="UserInterface" Collapsed="true">
-    <Position X="19" Y="1.5" Width="1.5" />
+    <Position X="17.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>lAgJEEACAAhoBDiowEQBBAACAAAgAE8AAEBIAABICQI=</HashCode>
       <FileName>UserInterface.h</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="ImgPions" Collapsed="true">
-    <Position X="17.25" Y="2.75" Width="1.5" />
+    <Position X="15.75" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAABAAIAAAAAAAAAAgAAACgAAAAAAAAAAAAAAABAA=</HashCode>
       <FileName>UserInterface.h</FileName>
     </TypeIdentifier>
   </Struct>
   <Typedef Name="Plateau" Collapsed="true">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Position X="4.5" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Partie.h</FileName>

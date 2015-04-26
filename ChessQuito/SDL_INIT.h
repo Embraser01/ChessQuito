@@ -3,6 +3,7 @@
 	définition de la fonction resize ( ==> main) 
 */
 
+
 #ifndef _SDL_INIT_H
 #define _SDL_INIT_H
 
