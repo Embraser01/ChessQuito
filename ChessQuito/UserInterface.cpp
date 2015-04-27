@@ -19,13 +19,13 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
 		exit(EXIT_FAILURE);
 	}
-
+	
 	police = TTF_OpenFont("fonts/Roboto-Regular.ttf", 60); // Police/Fonts du texte
 
 
 	ecran = SDL_SetVideoMode(TX, TY, 32, SDL_HWSURFACE);
 	SDL_WM_SetCaption("ChessQuito | Projet C++ | Fernandes Marc-Antoine", NULL);
-
+	
 
 	/* On charge les images et on redimenssionne à la taille de la case*/
 
@@ -43,7 +43,7 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 	imgBlanc.cavalier = IMG_Load("res/b_cavalier.png");
 	imgBlanc.pion = IMG_Load("res/b_pion.png");
 
-	croix = IMG_Load("res/croix.png");
+	croix = IMG_Load("res/croix.bmp");
 
 	SDL_SetColorKey(croix, SDL_SRCCOLORKEY, SDL_MapRGB(croix->format, 255, 255, 255));
 
@@ -76,12 +76,16 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 	resizeImage(imgBlanc.cavalier, CASE_Y, CASE_Y, false);
 	resizeImage(imgBlanc.pion, CASE_Y, CASE_Y, false);
 
-
+	
 	/* On crée les boutons necessaires et on met les autres à NULL */
 
 	btnColor = SDL_MapRGB(ecran->format, 129, 199, 132); // Couleur du fond d'un bouton (vert)
-	btnFontColor = { 0,0,0 }; // Couleur d'écriture d'un bouton (noir)
-	
+	//btnFontColor = { 0,0,0 }; // Couleur d'écriture d'un bouton (noir)
+	btnFontColor.r = 0;
+	btnFontColor.g = 0;
+	btnFontColor.b = 0;
+
+
 	btnSortir = new Bouton(ecran, police, "SORTIR", WIDTH + 10, TY - 75, TX - WIDTH - 20, 70, btnColor, btnFontColor);
 
 	btnGestJoueurs = new Bouton(ecran, police, "Gestionnaire Joueurs", WIDTH + 10, 100, TX - WIDTH - 20, 70, btnColor, btnFontColor);
@@ -124,6 +128,7 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 
 	dNavBar();
 	dPlateau();
+	
 	
 	SDL_Flip(ecran);
 }
@@ -546,11 +551,13 @@ void UserInterface::playPartie(Partie*& mPartie) {
 					}
 				}
 				else {
-					if ((xSelectPartie == -5 || ySelectPartie == -5) && (*mPartie)(xPartie, yPartie)->getColor() == !mPartie->getIsWhiteToPlay()) {
-						xSelectPartie = xPartie;
-						ySelectPartie = yPartie;
-						xPartie = 0;
-						yPartie = 0;
+					if ((xSelectPartie == -5 || ySelectPartie == -5) && (*mPartie)(xPartie, yPartie) != NULL) {
+						if((*mPartie)(xPartie, yPartie)->getColor() == !mPartie->getIsWhiteToPlay()){
+							xSelectPartie = xPartie;
+							ySelectPartie = yPartie;
+							xPartie = 0;
+							yPartie = 0;
+						}
 					}
 					else if(xSelectPartie == -5 || ySelectPartie == -5) {} // Empeche de tester le if d'après
 					else if (mPartie->placePiece((*mPartie)(xSelectPartie,ySelectPartie), xPartie, yPartie)) {
@@ -567,7 +574,17 @@ void UserInterface::playPartie(Partie*& mPartie) {
 			dPartie(mPartie);
 			if (mPartie->isPartieEnd()) {
 				cout << "Partie terminé ! " << endl;
-				cout << "Le gagnant est le joueur :" << mPartie->getGagnant() << endl;
+				int winner = mPartie->getGagnant();
+				cout << "Le gagnant est le joueur :" ;
+				if(winner == 0){
+					cout << mPartie->getJ1()->getNom() << endl;
+				}
+				else if(winner == 1){
+					cout << mPartie->getJ2()->getNom() << endl;
+				}
+				else{
+					cout << "Egalite" << endl;				
+				}
 
 				deletePartie(listePartie, mPartie);
 				continuer = false;
