@@ -26,7 +26,6 @@
 using namespace std;
 
 const int TAILLE=4;
-typedef Piece* Plateau[TAILLE][TAILLE]; // Echiquier
 
 class Joueur; // Pour que partie connaisse la class Joueur
 
@@ -39,7 +38,7 @@ private:
 	Joueur* j1; // Pointeur sur le joueur 1
 	Joueur* j2; // Pointeur sur le joueur 2
 
-	Plateau p; // Un échiquier par partie
+	Piece* p[TAILLE][TAILLE]; // Un échiquier par partie
 
 	Piece* pBlanc[4]; // Contient les pièces 
 	Piece* pNoir[4];

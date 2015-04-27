@@ -97,6 +97,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Diagramme de classe.cd" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
