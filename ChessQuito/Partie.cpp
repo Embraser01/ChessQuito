@@ -261,155 +261,9 @@ bool Partie::placePiece(Piece* piece, char pos2[3]){
 	int y2 = pos2[1] - '0';
 
 
-	/* On verifie que la destination est dans le plateau */
+	if (deplacePiece(piece, pos2)) {
 
-	if (x2 >= TAILLE || y2 >= TAILLE || x2 < 0 || y2 < 0) 
-		return false;
-
-
-	/* On gère les exceptions : 
-	*	- Cavalier (Il saute par dessus les pieces et prends sur la case d'arrivée) 
-	*	- Pion (Se déplace avant arrière de 1 et prend en diagonale) 
-	*	- Roi ( Bouge de 1 case) 
-	*/
-
-
-	if (p[x1][y1]->getName() == "Cavalier" || p[x1][y1]->getName() == "Roi") {
-		if (piece->setMove(pos1, pos2)) {
-
-			// On vérifie que la destination est vide
-
-			if (p[x2][y2] == NULL) {
-				p[x2][y2] = p[x1][y1];
-				p[x1][y1] = NULL;
-				nCoup++;
-
-				if (isWhiteToPlay)
-					isWhiteToPlay = false;
-				else
-					isWhiteToPlay = true;
-
-				return true;
-			}
-
-			// Sinon si la couleur est différente
-
-			if (p[x2][y2]->getColor() != piece->getColor()) {
-
-				p[x2][y2]->setState(2);
-
-				p[x2][y2] = p[x1][y1];
-				p[x1][y1] = NULL;
-				nCoup++;
-				nDernierePrise = nCoup;
-
-				if (isWhiteToPlay)
-					isWhiteToPlay = false;
-				else
-					isWhiteToPlay = true;
-
-				return true;
-			}	
-		}
-		return false;
-	}
-
-
-	if (p[x1][y1]->getName() == "Pion") {
-
-		if (piece->setMove(pos1, pos2)) {
-
-			// On vérifie que la destination est vide, (Avant//Arriere)
-
-			if (p[x2][y2] == NULL && x1 == x2) {
-				p[x2][y2] = p[x1][y1];
-				p[x1][y1] = NULL;
-				nCoup++;
-
-				if (isWhiteToPlay)
-					isWhiteToPlay = false;
-				else
-					isWhiteToPlay = true;
-
-				return true;
-			}
-
-			// Sinon si deplacement diagonale + pion adverse 
-
-			if (p[x2][y2] != NULL && x1 != x2) {
-				if (p[x2][y2]->getColor() != piece->getColor()) {
-
-					p[x2][y2]->setState(2);
-
-					p[x2][y2] = p[x1][y1];
-					p[x1][y1] = NULL;
-					nCoup++;
-					nDernierePrise = nCoup;
-
-					if (isWhiteToPlay)
-						isWhiteToPlay = false;
-					else
-						isWhiteToPlay = true;
-
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-
-	/* On valide le déplacement en fonction de la piece */
-
-	if ( piece->setMove(pos1, pos2)){
-
-
-		// On vérifie que la destination n'est pas prise par une autre piece de même couleur
-
-		if (p[x2][y2] != NULL)
-			if(p[x2][y2]->getColor() == piece->getColor())
-				return false;
-
-
-		// On récupère le xMax et yMax afin de pouvoir calculer le vecteur
-
-		int xMin = x1;
-		int xMax = x2;
-		int yMin = y1;
-		int yMax = y2;
-
-		if (x1 > x2) {
-			xMin = x2;
-			xMax = x1;
-		}
-		if (y1 > y2) {
-			yMin = y2;
-			yMax = y1;
-		}
-
-
-		// On parcours toutes les cases, et si une case est entre les deux points, on return
-
-		for (int x = xMin; x <= xMax; x++) {
-			for (int y = yMin; y <= yMax; y++) {
-
-				if(p[x][y] != NULL && (x != x1 || y != y1) && (x != x2 || y != y2)){ // On enleve la vérification des deux extrémitées du segment et on verifie si la case est vide ou pas
-
-					if (((x2 - x1) * (y - y1)) - ((x - x1) * (y2 - y1)) == 0) {	// M est sur la droite formée par pos1 et pos2 et M est forcement entre pos1 et pos2 car la boucle for l'est
-
-						return false;
-					}	
-				}
-			}
-		}
-
-
-		/* A ce moment, il n'y pas de pièce entre les deux points */
-
-
-		// Si la case de destination est vide, on bouge la piece
-
-		if ( p[x2][y2] == NULL){
+		if (p[x2][y2] == NULL) {
 			p[x2][y2] = p[x1][y1];
 			p[x1][y1] = NULL;
 			nCoup++;
@@ -422,11 +276,9 @@ bool Partie::placePiece(Piece* piece, char pos2[3]){
 			return true;
 		}
 
-		// Si la place est prise, on vire la pièce et on place la nouvelle
+		// Sinon si la couleur est différente
 
-
-
-		else { // Si de couleur differente
+		if (p[x2][y2]->getColor() != piece->getColor()) {
 
 			p[x2][y2]->setState(2);
 
@@ -483,6 +335,134 @@ bool Partie::initPiece(Piece* piece, char pos[3])
 	return false;
 }
 
+bool Partie::deplacePiece(Piece * piece, char pos2[])
+{
+
+	/* On recupère la position actuelle de la piece */
+
+	char pos1[2];
+
+	for (int i = 0; i < TAILLE; i++) {
+		for (int j = 0; j < TAILLE; j++) {
+			if (p[i][j] == piece) {
+				pos1[0] = i + 'a';
+				pos1[1] = j + '0';
+			}
+		}
+	}
+
+	/* On récupère les coordonnées réelles de la piece ainsi que celles de la destination */
+
+	int x1 = pos1[0] - 'a';
+	int y1 = pos1[1] - '0';
+
+	int x2 = pos2[0] - 'a';
+	int y2 = pos2[1] - '0';
+
+
+	/* On verifie que la destination est dans le plateau */
+
+	if (x2 >= TAILLE || y2 >= TAILLE || x2 < 0 || y2 < 0)
+		return false;
+
+
+	/* On gère les exceptions :
+	*	- Cavalier (Il saute par dessus les pieces et prends sur la case d'arrivée)
+	*	- Pion (Se déplace avant arrière de 1 et prend en diagonale)
+	*	- Roi ( Bouge de 1 case)
+	*/
+
+
+	if (p[x1][y1]->getName() == "Cavalier" || p[x1][y1]->getName() == "Roi") {
+		if (piece->setMove(pos1, pos2)) {
+			return true;
+		}
+		return false;
+	}
+
+
+	if (p[x1][y1]->getName() == "Pion") {
+
+		if (piece->setMove(pos1, pos2)) {
+
+			// On vérifie que la destination est vide, (Avant//Arriere)
+
+			if (p[x2][y2] == NULL && x1 == x2) {
+				return true;
+			}
+
+			// Sinon si deplacement diagonale + pion adverse 
+
+			if (p[x2][y2] != NULL && x1 != x2) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/* On valide le déplacement en fonction de la piece */
+
+	if (piece->setMove(pos1, pos2)) {
+
+
+		// On vérifie que la destination n'est pas prise par une autre piece de même couleur
+
+		if (p[x2][y2] != NULL)
+			if (p[x2][y2]->getColor() == piece->getColor())
+				return false;
+
+
+		// On récupère le xMax et yMax afin de pouvoir calculer le vecteur
+
+		int xMin = x1;
+		int xMax = x2;
+		int yMin = y1;
+		int yMax = y2;
+
+		if (x1 > x2) {
+			xMin = x2;
+			xMax = x1;
+		}
+		if (y1 > y2) {
+			yMin = y2;
+			yMax = y1;
+		}
+
+
+		// On parcours toutes les cases, et si une case est entre les deux points, on return
+
+		for (int x = xMin; x <= xMax; x++) {
+			for (int y = yMin; y <= yMax; y++) {
+
+				if (p[x][y] != NULL && (x != x1 || y != y1) && (x != x2 || y != y2)) { // On enleve la vérification des deux extrémitées du segment et on verifie si la case est vide ou pas
+
+					if (((x2 - x1) * (y - y1)) - ((x - x1) * (y2 - y1)) == 0) {	// M est sur la droite formée par pos1 et pos2 et M est forcement entre pos1 et pos2 car la boucle for l'est
+
+						return false;
+					}
+				}
+			}
+		}
+
+
+		/* A ce moment, il n'y pas de pièce entre les deux points */
+
+		return true;
+	}
+	return false;
+}
+
+bool Partie::deplacePiece(Piece *piece, int i , int j)
+{
+	char pos[3];
+
+	pos[0] = i + 'a';
+	pos[1] = j + '0';
+
+	return deplacePiece(piece, pos);
+}
+
 
 Piece*& Partie::operator()(int x, int y) {
 	return p[x][y];
@@ -524,6 +504,26 @@ bool Partie::addJoueur(Joueur* j)
 		return true;
 	}
 	return false;
+}
+
+
+vector<string> Partie::deplPossiblesSTL(string pos)
+{
+	vector<string> vs;
+	string tmp;
+
+	for (int i = 0; i < TAILLE; i++) {
+		for (int j = 0; j < TAILLE; j++) {
+			if (p[pos.at(0)][pos.at(1)] != NULL) {
+				if (deplacePiece(p[pos.at(0)][pos.at(1)], i, j)) {
+					tmp = (i + 'a') + '-' + j;
+					vs.push_back(tmp);
+				}
+			}
+		}
+	}
+
+	return vs;
 }
 
 

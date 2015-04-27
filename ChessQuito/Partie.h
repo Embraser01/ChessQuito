@@ -10,6 +10,7 @@
 #include <string>
 #include <iostream>
 #include <ctime>
+#include <vector>
 
 #include "Joueur.h"
 #include "Piece.h"
@@ -52,6 +53,9 @@ private:
 
 	bool initPiece(Piece*, char[3]); // Gère le placement initial des pièces privée car appelé par la fonction placePiece uniquement
 
+	bool deplacePiece(Piece*, char[]);
+	bool deplacePiece(Piece*, int, int);
+
 public:
 
 	Partie(); // Date généré automatiquement
@@ -90,6 +94,9 @@ public:
 
 	bool addJoueur(Joueur*); // Permet d'ajouter les joueurs à la partie
 
+
+
+	vector<string> deplPossiblesSTL(string pos);
 
 	bool isPartieInit(); // Retourne true si la partie a fini l'initialisation
 	bool isPartieEnd(); // Renvoie true si la partie est terminé
