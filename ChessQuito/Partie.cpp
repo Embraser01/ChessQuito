@@ -589,12 +589,8 @@ bool Partie::deplaceAleatoireSTL(int color)
 
 	char pos1[] = { vs3.at(id).at(0), vs3.at(id).at(1), '\0'};
 	Piece* piece = (*this)(pos1);
-
-	vector<string> vs2 = deplPossiblesSTL(pos1);
-
-
-	id = rand() % vs2.size();
-	char pos2[] = { vs2.at(id).at(3), vs2.at(id).at(4), '\0' };
+	
+	char pos2[] = { vs3.at(id).at(3), vs3.at(id).at(4), '\0' };
 	return placePiece(piece, pos2);
 }
 
