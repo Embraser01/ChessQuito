@@ -96,6 +96,13 @@ public:
 
 
 	vector<string> deplPossiblesSTL(string pos);
+	vector<string> deplPossiblesSTL(int color);
+
+	void afficheVector();
+
+	bool placeAleatoireSTL(int );
+	bool deplaceAleatoireSTL(int);
+
 
 	bool isPartieInit(); // Retourne true si la partie a fini l'initialisation
 	bool isPartieEnd(); // Renvoie true si la partie est terminé
