@@ -103,6 +103,7 @@ public:
 	bool placeAleatoireSTL(int );
 	bool deplaceAleatoireSTL(int);
 
+	void jouerBot(); // Forcement le Noir
 
 	bool isPartieInit(); // Retourne true si la partie a fini l'initialisation
 	bool isPartieEnd(); // Renvoie true si la partie est terminé

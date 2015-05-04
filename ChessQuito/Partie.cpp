@@ -68,6 +68,7 @@ Partie::Partie(const Partie& cpyPartie){
 	j2 = NULL;
 
 	typePartie = cpyPartie.typePartie;
+	isWhiteToPlay = cpyPartie.isWhiteToPlay;
 
 	nCoup = cpyPartie.nCoup;
 	nDernierePrise = cpyPartie.nDernierePrise;
@@ -76,11 +77,16 @@ Partie::Partie(const Partie& cpyPartie){
 		for(int j = 0; j < TAILLE; j++)
 			p[i][j] = cpyPartie.p[i][j]->clone();
 
+	for (int j = 0; j < TAILLE; j++) {
+		pNoir[j] = cpyPartie.pNoir[j]->clone();
+		pBlanc[j] = cpyPartie.pBlanc[j]->clone();
+	}
 }
 
 Partie& Partie::operator=(Partie& cpyPartie){
 
 	typePartie = cpyPartie.typePartie;
+	isWhiteToPlay = cpyPartie.isWhiteToPlay;
 
 	nCoup = cpyPartie.nCoup;
 	nDernierePrise = cpyPartie.nDernierePrise;
@@ -97,6 +103,12 @@ Partie& Partie::operator=(Partie& cpyPartie){
 	for(int i = 0; i < TAILLE;i++)
 		for(int j = 0; j < TAILLE; j++)
 			p[i][j] = cpyPartie.p[i][j]->clone();
+
+	for (int j = 0; j < TAILLE; j++) {
+		pNoir[j] = cpyPartie.pNoir[j]->clone();
+		pBlanc[j] = cpyPartie.pBlanc[j]->clone();
+	}
+
 
 	return cpyPartie;
 }
@@ -145,9 +157,9 @@ void Partie::setTypePartie(int type, bool force){
 		switch (typePartie) {
 
 		case 1:
-			cout << "Vous avez choisi la regle 1." << endl
+			/*cout << "Vous avez choisi la regle 1." << endl
 				<< "Vous aurez les pièces suivantes :" << endl
-				<< "Reine \t Tour \t Fou \t Cavalier" << endl;
+				<< "Reine \t Tour \t Fou \t Cavalier" << endl;*/
 
 			pBlanc[0] = new Reine(0);
 			pBlanc[1] = new Tour(0);
@@ -583,9 +595,12 @@ bool Partie::deplaceAleatoireSTL(int color)
 
 	id = rand() % vs2.size();
 	char pos2[] = { vs2.at(id).at(3), vs2.at(id).at(4), '\0' };
-
-	cout << piece << "   " << vs2.at(id).at(0) << vs2.at(id).at(1) << endl;
 	return placePiece(piece, pos2);
+}
+
+void Partie::jouerBot()
+{
+
 }
 
 
@@ -658,10 +673,10 @@ int Partie::getGagnant(){
 		int gagnant = 2;
 
 		if(score > 0){
-			gagnant = 1;
+			gagnant = 0;
 		}
 		else if(score < 0){
-			gagnant = 0;
+			gagnant = 1;
 		}
 
 		return gagnant;
