@@ -47,40 +47,74 @@ void saveJoueurs(Joueur***&);
 //////////////////
 
 int main(int argc, char *argv[]) {
+	srand(time(NULL));
 
+	const int nbPartie = 10000;
 
-	/* On charge les sauvegardes */
+	Partie** listePartie = new Partie*[nbPartie];
+	for (int i = 0; i < nbPartie; i++)
+		listePartie[i] = new Partie;
 
-	Joueur*** listeJoueur = NULL;
-	Partie*** listePartie = NULL;
+	int nbEgalité = 0;
+	int nbBlancWin = 0;
+	int nbNoirWin = 0;
 
-	chargerJeu(listePartie, listeJoueur);
-	
+	for (int i = 0; i < nbPartie; i++) {
+		listePartie[i]->setTypePartie(1);
+		while (!listePartie[i]->isPartieInit()) {
+			while (!listePartie[i]->placeAleatoireSTL(!listePartie[i]->getIsWhiteToPlay()));
+		}
 
-	/* Initialisation de l'interface Utilisateur */
+		while (!listePartie[i]->isPartieEnd()) {
+			while (!listePartie[i]->deplaceAleatoireSTL(!listePartie[i]->getIsWhiteToPlay()));
+		}
+		int gagnant = listePartie[i]->getGagnant();
 
-	UserInterface ui(listeJoueur, listePartie);
-
-	ui.start();
-
-
-	/* On enregistre les joueurs + les parties */
-
-	saveJoueurs(listeJoueur);
-	saveParties(listePartie);
-
-
-	/* On supprime les listes de la mémoire */
-
-	for(int i = 0; (*listePartie)[i] != NULL;i++){
-		delete (*listePartie)[i];
+		if (gagnant == 0)
+			nbBlancWin++;
+		else if (gagnant == 1) {
+			nbNoirWin++;
+		}
+		else {
+			nbEgalité++;
+		}
 	}
-	delete [](*listePartie);
+	cout << "Egal :" << nbEgalité << endl
+		<< "Blanc :" << nbBlancWin << endl
+		<< "Noir :" << nbNoirWin << endl;
 
-	for (int i = 0; (*listeJoueur)[i] != NULL; i++) {
-		delete (*listeJoueur)[i];
-	}
-	delete[](*listeJoueur);
+	///* On charge les sauvegardes */
+
+	//Joueur*** listeJoueur = NULL;
+	//Partie*** listePartie = NULL;
+
+	//chargerJeu(listePartie, listeJoueur);
+	//
+
+	///* Initialisation de l'interface Utilisateur */
+
+	///*UserInterface ui(listeJoueur, listePartie);
+
+	//ui.start();*/
+
+
+	///* On enregistre les joueurs + les parties */
+
+	//saveJoueurs(listeJoueur);
+	//saveParties(listePartie);
+
+
+	///* On supprime les listes de la mémoire */
+
+	//for(int i = 0; (*listePartie)[i] != NULL;i++){
+	//	delete (*listePartie)[i];
+	//}
+	//delete [](*listePartie);
+
+	//for (int i = 0; (*listeJoueur)[i] != NULL; i++) {
+	//	delete (*listeJoueur)[i];
+	//}
+	//delete[](*listeJoueur);
 
 	return EXIT_SUCCESS;
 }

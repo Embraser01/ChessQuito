@@ -68,6 +68,7 @@ Partie::Partie(const Partie& cpyPartie){
 	j2 = NULL;
 
 	typePartie = cpyPartie.typePartie;
+	isWhiteToPlay = cpyPartie.isWhiteToPlay;
 
 	nCoup = cpyPartie.nCoup;
 	nDernierePrise = cpyPartie.nDernierePrise;
@@ -76,11 +77,16 @@ Partie::Partie(const Partie& cpyPartie){
 		for(int j = 0; j < TAILLE; j++)
 			p[i][j] = cpyPartie.p[i][j]->clone();
 
+	for (int j = 0; j < TAILLE; j++) {
+		pNoir[j] = cpyPartie.pNoir[j]->clone();
+		pBlanc[j] = cpyPartie.pBlanc[j]->clone();
+	}
 }
 
 Partie& Partie::operator=(Partie& cpyPartie){
 
 	typePartie = cpyPartie.typePartie;
+	isWhiteToPlay = cpyPartie.isWhiteToPlay;
 
 	nCoup = cpyPartie.nCoup;
 	nDernierePrise = cpyPartie.nDernierePrise;
@@ -97,6 +103,12 @@ Partie& Partie::operator=(Partie& cpyPartie){
 	for(int i = 0; i < TAILLE;i++)
 		for(int j = 0; j < TAILLE; j++)
 			p[i][j] = cpyPartie.p[i][j]->clone();
+
+	for (int j = 0; j < TAILLE; j++) {
+		pNoir[j] = cpyPartie.pNoir[j]->clone();
+		pBlanc[j] = cpyPartie.pBlanc[j]->clone();
+	}
+
 
 	return cpyPartie;
 }
@@ -145,9 +157,9 @@ void Partie::setTypePartie(int type, bool force){
 		switch (typePartie) {
 
 		case 1:
-			cout << "Vous avez choisi la regle 1." << endl
+			/*cout << "Vous avez choisi la regle 1." << endl
 				<< "Vous aurez les pièces suivantes :" << endl
-				<< "Reine \t Tour \t Fou \t Cavalier" << endl;
+				<< "Reine \t Tour \t Fou \t Cavalier" << endl;*/
 
 			pBlanc[0] = new Reine(0);
 			pBlanc[1] = new Tour(0);
@@ -510,13 +522,12 @@ bool Partie::addJoueur(Joueur* j)
 vector<string> Partie::deplPossiblesSTL(string pos)
 {
 	vector<string> vs;
-	string tmp;
 
 	for (int i = 0; i < TAILLE; i++) {
 		for (int j = 0; j < TAILLE; j++) {
-			if (p[pos.at(0)][pos.at(1)] != NULL) {
-				if (deplacePiece(p[pos.at(0)][pos.at(1)], i, j)) {
-					tmp = (i + 'a') + '-' + j;
+			if (p[pos.at(0) - 'a'][pos.at(1) - '0'] != NULL) {
+				if (deplacePiece(p[pos.at(0) - 'a'][pos.at(1) - '0'], i, j)) {
+					char tmp[] = { pos.at(0),pos.at(1),'-', i + 'a' , j + '0','\0'};
 					vs.push_back(tmp);
 				}
 			}
@@ -524,6 +535,68 @@ vector<string> Partie::deplPossiblesSTL(string pos)
 	}
 
 	return vs;
+}
+
+vector<string> Partie::deplPossiblesSTL(int color)
+{
+	vector<string> lsGlobale;
+
+	for (int i = 0; i < TAILLE; i++) {
+		for (int j = 0; j < TAILLE; j++) {
+			if (p[i][j] != NULL) {
+				if (p[i][j]->getColor() == color) {
+					char pos[] = { i + 'a' , j + '0' };
+					vector<string> tmp = deplPossiblesSTL(pos);
+					lsGlobale.insert(lsGlobale.end(),tmp.begin(),tmp.end());
+				}
+			}
+		}
+	}
+	return lsGlobale;
+}
+
+void Partie::afficheVector() {
+	string tmp = "a3";
+
+
+	cout << "Liste des destinations possibles depuis a1" << endl;
+	vector<string> vs =	deplPossiblesSTL(tmp);
+
+	for (vector<string>::iterator it = vs.begin(); it != vs.end(); it++) {
+		cout << ' ' << *it << endl;
+	}
+}
+
+bool Partie::placeAleatoireSTL(int color)
+{
+	Piece* piece;
+	if (color == 0)
+		piece = pBlanc[rand() % TAILLE];
+	else 
+		piece = pNoir[rand() % TAILLE];
+
+	if (placePiece(piece, rand() % TAILLE, rand() % TAILLE))
+		return true;
+
+	return false;
+}
+
+bool Partie::deplaceAleatoireSTL(int color)
+{
+	vector<string> vs3 = deplPossiblesSTL(color);
+
+	int id = rand() % vs3.size();
+
+	char pos1[] = { vs3.at(id).at(0), vs3.at(id).at(1), '\0'};
+	Piece* piece = (*this)(pos1);
+	
+	char pos2[] = { vs3.at(id).at(3), vs3.at(id).at(4), '\0' };
+	return placePiece(piece, pos2);
+}
+
+void Partie::jouerBot()
+{
+
 }
 
 
@@ -596,10 +669,10 @@ int Partie::getGagnant(){
 		int gagnant = 2;
 
 		if(score > 0){
-			gagnant = 1;
+			gagnant = 0;
 		}
 		else if(score < 0){
-			gagnant = 0;
+			gagnant = 1;
 		}
 
 		return gagnant;

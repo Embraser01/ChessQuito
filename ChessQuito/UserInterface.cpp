@@ -105,6 +105,7 @@ UserInterface::UserInterface(Joueur*** listeJoueur, Partie*** listePartie)
 
 	btnListe = NULL;
 
+	btnVector = NULL;
 
 	/* On initialise l'EditBox (Noir sur fond Blanc) */
 
@@ -620,6 +621,14 @@ void UserInterface::playPartie(Partie*& mPartie) {
 			else if (btnSortir->isClicked(event.button.x, event.button.y)) {
 				continuer = 0;
 			}
+			else if (btnVector->isClicked(event.button.x, event.button.y)) {
+				//mPartie->afficheVector();
+				if (!mPartie->isPartieInit())
+					while(!mPartie->placeAleatoireSTL(!mPartie->getIsWhiteToPlay()));
+				else
+					while(!mPartie->deplaceAleatoireSTL(!mPartie->getIsWhiteToPlay()));
+				dPartie(mPartie);
+			}
 
 			break;
 		}
@@ -627,6 +636,10 @@ void UserInterface::playPartie(Partie*& mPartie) {
 }
 
 void UserInterface::dPartie(Partie*& mPartie) {
+
+	if (btnVector == NULL)
+		btnVector = new Bouton(ecran, police, "Vector", WIDTH + 10, 100, TX - WIDTH - 20, 70, btnColor, btnFontColor);
+	btnVector->afficherBtn();
 
 
 	SDL_FillRect(ecran, &plateau, SDL_MapRGB(ecran->format, 207, 216, 220)); // On met l'arriere plan
@@ -655,6 +668,9 @@ void UserInterface::dPartie(Partie*& mPartie) {
 
 	}
 	else {
+
+		
+
 
 		/* On affiche les pions des joueurs */
 
@@ -871,6 +887,9 @@ void UserInterface::dPartie(Partie*& mPartie) {
 		caseRect.x = 250;
 		caseRect.y = 280;
 
+		
+
+		
 
 		for (int i = 0; i < TAILLE; i++) {
 			caseRect.x = 250;
@@ -879,7 +898,31 @@ void UserInterface::dPartie(Partie*& mPartie) {
 
 				/* On choisi la couleur en fonction de ce qu'on veut (select, paire, etc...) */
 
-				Uint32 color;
+				Uint32 color = NULL;
+
+				
+				if (xPartie < TAILLE && xPartie >= 0 && yPartie < TAILLE && yPartie >= 0) {
+					char tmp[] = { xPartie + 'a' , yPartie + '0' };
+
+					vector<string> vs = mPartie->deplPossiblesSTL(tmp);
+					for (vector<string>::iterator it = vs.begin(); it != vs.end(); it++) {
+						if ((*it).at(3) - 'a' == i && (*it).at(4) - '0' == j) {
+							color = SDL_MapRGB(ecran->format, 0, 0, 150);
+							break;
+						}
+					}
+				}
+				
+
+				if (color == NULL) {
+					if ((j + i) % 2 == 0) {
+						color = SDL_MapRGB(ecran->format, 246, 228, 151);
+					}
+					else {
+						color = SDL_MapRGB(ecran->format, 189, 141, 70);
+					}
+				}
+
 
 				if (i == xPartie && j == yPartie) {
 					color = SDL_MapRGB(ecran->format, 255, 0, 0);
@@ -887,13 +930,6 @@ void UserInterface::dPartie(Partie*& mPartie) {
 				else if (i == xSelectPartie && j == ySelectPartie) {
 					color = SDL_MapRGB(ecran->format, 0, 255, 0);
 				}
-				else if ((j + i) % 2 == 0) {
-					color = SDL_MapRGB(ecran->format, 246, 228, 151);
-				}
-				else {
-					color = SDL_MapRGB(ecran->format, 189, 141, 70);
-				}
-
 
 				SDL_FillRect(ecran, &caseRect, color); // On met la case
 

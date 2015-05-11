@@ -88,6 +88,8 @@ private:
 
 	Bouton** btnListe;
 
+	Bouton* btnVector;
+
 
 	EditBox* eb; // EditBox pour le pseudo du joueur
 
